@@ -11,7 +11,7 @@ DO contracts screen
 DSO contracts screen 
 DC contracts screen 
 ###Network architecture 
-![Network Architecture](/Network Architecture.png)
+![Network architecture](Network architecture.png)
 ###Process flow diagram 
 Insert diagram. Consider modifying it for intermediate as well. 
 ##FAQ
