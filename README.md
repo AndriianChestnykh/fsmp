@@ -9,14 +9,20 @@ All the parts of software are open-source.
 ###System concept schema
 TODO:  Add correct labels to arrows
 ![System concept schema](images/Concept.png)
-###Smart Contract functions
 
-##Trading 
+###Smart Contract functions
+####Trading 
 This function of Ethereum Smart Contract is to support free market of disk space between DO and DSO.
 ![Trading](images/Trading UI.png)
-##Escrow 
+####Escrow 
 Smart Contract keeps agreement status between DO and DSO. It calculates payments which can we withdrawed by DSO.
 ![Escrow](images/Escrow UI.png)
+####Routing
+TODO: Info here
+
+###Client functions
+TODO: Info here
+
 
 ###Network architecture 
 TODO: Network architecture schema
