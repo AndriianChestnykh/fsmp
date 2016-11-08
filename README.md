@@ -7,6 +7,7 @@ Blockchain Smart Contracts keep cryptocurrency and make payments. They are suppo
 All the parts of software are open-source.
 
 ###System concept schema
+TODO:  Add correct labels to arrows
 ![System concept schema](images/Concept.png)
 ###Smart Contract functions
 
