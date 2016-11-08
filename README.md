@@ -21,6 +21,6 @@ Smart Contract keeps agreement status between DO and DSO. It calculates payments
 ###Network architecture 
 TODO: Network architecture schema
 ###Process flow diagram 
-Insert diagram.
+![Escrow](images/Process Flow.png)
 ##FAQ
 TODO: Questions & Answers
