@@ -15,7 +15,7 @@ contract TradingContract {
         uint weiLeftToWithdraw;
         uint withdrawAtDate;
 
-        //My
+        
         string ipAndPortDO;
     }
 
