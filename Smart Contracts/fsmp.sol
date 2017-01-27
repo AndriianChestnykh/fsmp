@@ -149,43 +149,62 @@ contract fsmp {
   function cancelBuyOrder(uint buyOrderIndex, uint buyOrderID){
       
       
-      if(buyOrderArr[buyOrderIndex].DO == msg.sender){
+       //throw an exception if index bigger then array
+      if (buyOrderIndex >= buyOrderArr.length) throw;
+
+      //check if user can cancel an order
+      if(buyOrderArr[buyOrderIndex].DO == msg.sender && buyOrderArr[buyOrderIndex].id == buyOrderID){
+         
          
             uint amount = buyOrderArr[buyOrderIndex].weiInitialAmount;
         
             if (msg.sender.send(amount)) {
+                
                 delete buyOrderArr[buyOrderIndex];
-                buyOrderCount--;
+                
+                //if index not last element in the array
+                if(buyOrderIndex != buyOrderArr.length-1){
+                    buyOrderArr[buyOrderIndex] = buyOrderArr[buyOrderArr.length-1];
+                    delete buyOrderArr[buyOrderArr.length-1];
+                }
+                
+                buyOrderArr.length--;
+                
+                return;
             } else {
+                
                 throw;
             }
           
       }else{
           throw;
       }
+      
   }
   
   function cancelSellOrder(uint sellOrderIndex, uint sellOrderID){
       
-      if(sellOrderArr[sellOrderIndex].DSO == msg.sender){
-          //TODO: Return money;
-           //TODO: Return money;
-        //   uint amount = sellOrderArr[index].weiInitialAmount;
-        
-        //     if (msg.sender.send(amount)) {
-                
-        //         delete buyOrderArr[index];
-        //         return true;
-        //     } else {
-                
-        //         return false;
-        //     }
+      //throw an exception if index bigger then array
+      if (sellOrderIndex >= sellOrderArr.length) throw;
+      
+      //check if user can cancel an order
+      if(sellOrderArr[sellOrderIndex].DSO == msg.sender && sellOrderArr[sellOrderIndex].id == sellOrderID){
           
           delete sellOrderArr[sellOrderIndex];
-          sellOrderCount--;
+          
+          //if index not last element in the array
+           if(sellOrderIndex != sellOrderArr.length-1){
+                sellOrderArr[sellOrderIndex] = sellOrderArr[sellOrderArr.length-1];
+                delete sellOrderArr[sellOrderArr.length-1];
+            }
+            
+            sellOrderArr.length--;
+          
+          return;
       }else{
           throw;
       }
+      
   }
   
   
@@ -193,7 +212,8 @@ contract fsmp {
   //Utility functions - constant
   
   //Buy order
-  function getBuyOrder(uint buyOrderIndex, uint buyOrderID)constant returns(uint id,address DO,uint volume,uint pricePerGB,uint weiInitialAmount){
+  //function getBuyOrder(uint buyOrderIndex, uint buyOrderID)constant returns(uint id,address DO,uint volume,uint pricePerGB,uint weiInitialAmount){
+  function getBuyOrder(uint buyOrderIndex)constant returns(uint id,address DO,uint volume,uint pricePerGB,uint weiInitialAmount){
       return (buyOrderArr[buyOrderIndex].id,
               buyOrderArr[buyOrderIndex].DO,
               buyOrderArr[buyOrderIndex].volumeGB,
@@ -206,7 +226,8 @@ contract fsmp {
   }
 
   //Sell order    
-  function getSellOrder(uint sellOrderIndex, uint sellOrderID)constant returns(uint id,address DSO,uint volume,uint pricePerGB,string IPAndPort) {
+  //function getSellOrder(uint sellOrderIndex, uint sellOrderID)constant returns(uint id,address DSO,uint volume,uint pricePerGB,string IPAndPort) {
+    function getSellOrder(uint sellOrderIndex)constant returns(uint id,address DSO,uint volume,uint pricePerGB,string IPAndPort) {
       return (sellOrderArr[sellOrderIndex].id,
               sellOrderArr[sellOrderIndex].DSO,
               sellOrderArr[sellOrderIndex].volumeGB,
@@ -220,7 +241,8 @@ contract fsmp {
   
   //contracts
   
-  function getStorageContract(uint storageContractIndex, uint storageContractID) constant returns(
+  //function getStorageContract(uint storageContractIndex, uint storageContractID) constant returns(
+  function getStorageContract(uint storageContractIndex) constant returns(
         uint id,
         address DO, 
         address DSO, 
@@ -235,9 +257,9 @@ contract fsmp {
     ) {
         
     //check if Storage Contract Id is equal to expected to avoid working with wrong or removed Storage Contract
-    if (storageContractArr[storageContractIndex].id != storageContractID) {
-        throw;
-    }        
+    // if (storageContractArr[storageContractIndex].id != storageContractID) {
+    //     throw;
+    // }        
         
       var contr = storageContractArr[storageContractIndex];
         
