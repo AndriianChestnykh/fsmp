@@ -186,7 +186,7 @@ contract fsmp {
       
       
        //throw an exception if index bigger then array
-      if (buyOrderIndex >= buyOrderArr.length) throw;
+      //if (buyOrderIndex >= buyOrderArr.length) throw;
 
       //check if user can cancel an order
       if(buyOrderArr[buyOrderIndex].DO == msg.sender && buyOrderArr[buyOrderIndex].id == buyOrderID){
@@ -201,7 +201,7 @@ contract fsmp {
                 //if index not last element in the array
                 if(buyOrderIndex != buyOrderArr.length-1){
                     buyOrderArr[buyOrderIndex] = buyOrderArr[buyOrderArr.length-1];
-                    delete buyOrderArr[buyOrderArr.length-1];
+                    //delete buyOrderArr[buyOrderArr.length-1];
                 }
                 
                 buyOrderArr.length--;
@@ -221,7 +221,7 @@ contract fsmp {
   function cancelSellOrder(uint sellOrderIndex, uint sellOrderID){
       
       //throw an exception if index bigger then array
-      if (sellOrderIndex >= sellOrderArr.length) throw;
+      //if (sellOrderIndex >= sellOrderArr.length) throw;
       
       //check if user can cancel an order
       if(sellOrderArr[sellOrderIndex].DSO == msg.sender && sellOrderArr[sellOrderIndex].id == sellOrderID){
@@ -231,7 +231,7 @@ contract fsmp {
           //if index not last element in the array
            if(sellOrderIndex != sellOrderArr.length-1){
                 sellOrderArr[sellOrderIndex] = sellOrderArr[sellOrderArr.length-1];
-                delete sellOrderArr[sellOrderArr.length-1];
+                //delete sellOrderArr[sellOrderArr.length-1];
             }
             
             sellOrderArr.length--;
@@ -242,8 +242,6 @@ contract fsmp {
       }
       
   }
-  
-  
   
   //Utility functions - constant
   
