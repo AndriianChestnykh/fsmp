@@ -2,6 +2,13 @@ pragma solidity ^0.4.0;
 
 contract fsmp {
     
+// this contract constructor is for testing purpose    
+/*  function fsmp() payable {
+     createBuyOrder(100, 5);
+     createStorageContract(0,1,1,"xxx.xxx.xxx.xxx:xxxxx"); 
+     openStorageContract(0,1);
+  }*/    
+    
   struct SellOrder{
 	uint id; //Sell Order Id (auto increment)
 	address	DSO; //Data Storage Owner address of the contract
@@ -46,28 +53,50 @@ contract fsmp {
   SellOrder[] sellOrderArr; // array of sell orders
   BuyOrder[]  buyOrderArr; // array of buy orders
   StorageContract[]  storageContractArr; // array of contracts
+
+
+  //################## Shared function ################################################
   
+  function deleteBuyOrderFromArray (uint buyOrderIndex) internal {
+    //if index not last element in the array
+    if(buyOrderIndex != buyOrderArr.length-1){
+        buyOrderArr[buyOrderIndex] = buyOrderArr[buyOrderArr.length-1];
+    }
+    buyOrderArr.length--;
+    buyOrderCount--;
+  }
   
-  //############################################################################
-  //Functions - payable
+  function deleteSellOrderFromArray (uint sellOrderIndex) internal {
+    //if index not last element in the array
+    if(sellOrderIndex != sellOrderArr.length-1){
+        sellOrderArr[sellOrderIndex] = sellOrderArr[sellOrderArr.length-1];
+    }
+    sellOrderArr.length--;
+    sellOrderCount--;
+  }  
   
+  function weiAllowedToWithdraw(uint storageContractIndex) constant returns (uint weiAllowedToWithdraw) {
+      var c = storageContractArr[storageContractIndex];
+      if (c.withdrawedAtDate == 0) return 0;
+      weiAllowedToWithdraw = (now - c.withdrawedAtDate) * c.pricePerGB * c.volumeGB;
+      return weiAllowedToWithdraw;
+  }  
   
-  // ##### Trading
-  function createBuyOrder(uint volumeGB, uint pricePerGB) payable{
+  //################## Trading ##########################################################
+ 
+  function createBuyOrder(uint volumeGB, uint pricePerGB) payable {
       buyOrderArr.push(BuyOrder(++buyOrderId, msg.sender, volumeGB, pricePerGB, msg.value));
       buyOrderCount++;
   }
   
-  function createSellOrder(uint volumeGB, uint pricePerGB, string IPAndPort) payable{
+  function createSellOrder(uint volumeGB, uint pricePerGB, string IPAndPort) {
      sellOrderArr.push(SellOrder(++sellOrderId, msg.sender, volumeGB, pricePerGB, IPAndPort));
      sellOrderCount++;
   }
+     
+  // ############################################################################
   
-  // ### 
-  
-  //OrderType(string): ""buy"", ""sell"""
-  //TODO: probably we should also send contract index as a parameter to reduce iterations????
-  function createStorageContract(uint orderIndex, uint orderID, uint orderType, string IPAndPort) payable returns (uint newStorageContractID){
+    function createStorageContract(uint orderIndex, uint orderID, uint orderType, string IPAndPort) payable returns (uint newStorageContractID){
 
       //DSO calls the contract, orderType = "buy"
       if (orderType == 1) {
@@ -89,11 +118,9 @@ contract fsmp {
             buyOrderArr[orderIndex].weiInitialAmount,   //WeiLeftToWithdraw - from the BuyOrder data
             0                                   //WeiWithdrawedAtDate - empty            
             ));
+            
         storageContractCount++;
-
-        delete buyOrderArr[orderIndex];
-        buyOrderCount--;
-        
+        deleteBuyOrderFromArray(orderIndex);
         return storageContractId;
         
       //DO call the contract, orderType = "sell"
@@ -103,6 +130,7 @@ contract fsmp {
         if (sellOrderArr[orderIndex].id != orderID) {
             throw;
         }
+        
         storageContractArr.push(StorageContract(
             ++storageContractId,                    //ContractID - auto increment
             msg.sender,                             //DO - from msg.sender (the function caller address)
@@ -115,33 +143,41 @@ contract fsmp {
             msg.value,                              //WeiLeftToWithdraw - from msg.value (weis sent with the call)
             0                                       //WeiWithdrawedAtDate - empty
             ));
+            
         storageContractCount++;
-        
-        delete sellOrderArr[orderIndex];
-        sellOrderCount--;
-
+        deleteSellOrderFromArray(orderIndex);
         return storageContractId;
       }
+      
       throw;
   }
   
-  //TODO: probably we should also send contract index as a parameter to reduce iterations????
   function refillStorageContract(uint storageContractIndex, uint storageContractID) payable {
-      //TODO: not implemented;
+      //TODO: add DO check and index - id check
+      var c = storageContractArr[storageContractIndex];
+      c.weiLeftToWithdraw += msg.value;
   }
   
-  //TODO: probably we should also send contract index as a parameter to reduce iterations????
   function withdrawFromStorageContract(uint storageContractIndex, uint storageContractID) returns(uint withdrawedWei) {
-      //TODO: not implemented;
-      return 0;
+      //TODO: add DSO check, index - id check, open/close check, enough money check
+      uint watw = this.weiAllowedToWithdraw(storageContractIndex);
+      var c = storageContractArr[storageContractIndex];
+      c.weiLeftToWithdraw -= watw;
+      c.withdrawedAtDate = now;
+      if (!msg.sender.send(watw)) throw;
+
+      return watw;
   }
   
-  function startStorageContract(uint storageContractIndex, uint storageContractID) {
-      //TODO: not implemented;
+  function openStorageContract(uint storageContractIndex, uint storageContractID) {
+      //TODO: add DO check and index - id check
+      storageContractArr[storageContractIndex].openDate = now;
+      storageContractArr[storageContractIndex].withdrawedAtDate = now;
   }
   
-  function stopStorageContract(uint storageContractIndex, uint storageContractID) {
-      //TODO: not  implemented;
+  function closeStorageContract(uint storageContractIndex, uint storageContractID) {
+      //TODO: add DO/DSO check and index - id check
+      storageContractArr[storageContractIndex].closeDate = now;
   }
   
   //
@@ -239,9 +275,8 @@ contract fsmp {
     return sellOrderArr.length;
   }
   
-  //contracts
+  //Storage Contract
   
-  //function getStorageContract(uint storageContractIndex, uint storageContractID) constant returns(
   function getStorageContract(uint storageContractIndex) constant returns(
         uint id,
         address DO, 
@@ -256,12 +291,8 @@ contract fsmp {
         uint weiAllowedToWithdraw
     ) {
         
-    //check if Storage Contract Id is equal to expected to avoid working with wrong or removed Storage Contract
-    // if (storageContractArr[storageContractIndex].id != storageContractID) {
-    //     throw;
-    // }        
-        
       var contr = storageContractArr[storageContractIndex];
+      uint watw = this.weiAllowedToWithdraw(storageContractIndex);
         
       return (contr.id,
               contr.DO,
@@ -273,7 +304,8 @@ contract fsmp {
               contr.pricePerGB,
               contr.weiLeftToWithdraw,
               contr.withdrawedAtDate,
-              0 /*!!!! 0 value is a dummy. Need to return real value from special internal function */);
+              watw
+              );
   }
   
   function storageContractsLength() constant returns(uint){
