@@ -196,17 +196,22 @@ contract fsmp {
         
             if (msg.sender.send(amount)) {
                 
-                delete buyOrderArr[buyOrderIndex];
+                //delete buyOrderArr[buyOrderIndex];
                 
                 //if index not last element in the array
-                if(buyOrderIndex != buyOrderArr.length-1){
-                    buyOrderArr[buyOrderIndex] = buyOrderArr[buyOrderArr.length-1];
+                //if(buyOrderIndex != buyOrderArr.length-1){
+                //    buyOrderArr[buyOrderIndex] = buyOrderArr[buyOrderArr.length-1];
                     //delete buyOrderArr[buyOrderArr.length-1];
-                }
+                //}
                 
-                buyOrderArr.length--;
+                //buyOrderArr.length--;
+                
+                deleteBuyOrderFromArray(buyOrderIndex);
                 
                 return;
+                
+                
+
             } else {
                 
                 throw;
@@ -226,15 +231,17 @@ contract fsmp {
       //check if user can cancel an order
       if(sellOrderArr[sellOrderIndex].DSO == msg.sender && sellOrderArr[sellOrderIndex].id == sellOrderID){
           
-          delete sellOrderArr[sellOrderIndex];
+          //delete sellOrderArr[sellOrderIndex];
           
           //if index not last element in the array
-           if(sellOrderIndex != sellOrderArr.length-1){
+          // if(sellOrderIndex != sellOrderArr.length-1){
                 sellOrderArr[sellOrderIndex] = sellOrderArr[sellOrderArr.length-1];
                 //delete sellOrderArr[sellOrderArr.length-1];
-            }
+            //}
             
-            sellOrderArr.length--;
+            //sellOrderArr.length--;
+            
+            deleteSellOrderFromArray(sellOrderIndex);
           
           return;
       }else{
