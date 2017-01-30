@@ -8,7 +8,7 @@ contract fsmp {
 /*  function fsmp() payable {
      createBuyOrder(100, 5);
      createStorageContract(0,1,1,"xxx.xxx.xxx.xxx:xxxxx"); 
-     openStorageContract(0,1);
+     startStorageContract(0,1);
   }*/
     
   struct SellOrder{
@@ -36,8 +36,8 @@ contract fsmp {
     address DSO; //Data storage owner address
     string IPAndPort; //IP/port of data storage owner
     uint volumeGB; //Volume of disk space, which can be provided by DSO.
-    uint openDate; //Date and time, which, if exists, indicates that the contract has been started
-    uint closeDate;	//Date and time, which, if exists, indicates that the contract has been closed
+    uint startDate; //Date and time, which, if exists, indicates that the contract has been started
+    uint stopDate;	//Date and time, which, if exists, indicates that the contract has been stopped
     uint pricePerGB; //Price in wei to pay for 1 second (will be 1 day in real case) per 1 GB storage
     uint weiLeftToWithdraw;	//Quantity of wei, that can we withdrawed by DSO
     uint withdrawedAtDate; //Last date and time when wei was withdrawed by DSO
@@ -159,8 +159,8 @@ contract fsmp {
             msg.sender,                         //DSO - from msg.sender (the function caller address)
             IPAndPort,                          //IPAndPort - from input IPAndPort param
             buyOrderArr[orderIndex].volumeGB,   //VolumeGB - from the BuyOrder data
-            0,                                  //OpenDate - empty
-            0,                                  //CloseDate - empty
+            0,                                  //StartDate - empty
+            0,                                  //StopDate - empty
             buyOrderArr[orderIndex].pricePerGB, //PricePerGB - from the BuyOrder data
             buyOrderArr[orderIndex].weiInitialAmount,   //WeiLeftToWithdraw - from the BuyOrder data
             0                                   //WeiWithdrawedAtDate - empty            
@@ -183,8 +183,8 @@ contract fsmp {
             sellOrderArr[orderIndex].DSO,           //DSO - from the SellOrder data
             sellOrderArr[orderIndex].IPAndPort,    //IPAndPort - from the SellOrder data
             sellOrderArr[orderIndex].volumeGB,    //VolumeGB - from the SellOrder data
-            0,                                      //OpenDate - empty
-            0,                                      //CloseDate - empty
+            0,                                      //StartDate - empty
+            0,                                      //StopDate - empty
             sellOrderArr[orderIndex].pricePerGB,   //PricePerGB - from the SellOrder data
             msg.value,                              //WeiLeftToWithdraw - from msg.value (weis sent with the call)
             0                                       //WeiWithdrawedAtDate - empty
@@ -203,7 +203,7 @@ contract fsmp {
   }
   
   function withdrawFromStorageContract(uint storageContractIndex, uint storageContractID) returns(uint withdrawedWei) {
-      //TODO: add DSO check, index - id check, open/close check, enough money check
+      //TODO: add DSO check, index - id check, start/stop contract check, enough money check
       uint watw = this.weiAllowedToWithdraw(storageContractIndex);
       var c = storageContractArr[storageContractIndex];
       c.weiLeftToWithdraw -= watw;
@@ -213,15 +213,15 @@ contract fsmp {
       return watw;
   }
   
-  function openStorageContract(uint storageContractIndex, uint storageContractID) {
+  function startStorageContract(uint storageContractIndex, uint storageContractID) {
       //TODO: add DO check and index - id check
-      storageContractArr[storageContractIndex].openDate = now;
+      storageContractArr[storageContractIndex].startDate = now;
       storageContractArr[storageContractIndex].withdrawedAtDate = now;
   }
   
-  function closeStorageContract(uint storageContractIndex, uint storageContractID) {
+  function stopStorageContract(uint storageContractIndex, uint storageContractID) {
       //TODO: add DO/DSO check and index - id check
-      storageContractArr[storageContractIndex].closeDate = now;
+      storageContractArr[storageContractIndex].stopDate = now;
   }
     
   
@@ -231,8 +231,8 @@ contract fsmp {
         address DSO, 
         string IPandPort, 
         uint volumeGB, 
-        uint openDate, 
-        uint closeDate, 
+        uint startDate, 
+        uint stopDate, 
         uint pricePerGB, 
         uint weiLeftToWithdraw, 
         uint withdrawedAtDate, 
@@ -247,8 +247,8 @@ contract fsmp {
               contr.DSO,
               contr.IPAndPort,
               contr.volumeGB,
-              contr.openDate,
-              contr.closeDate,
+              contr.startDate,
+              contr.stopDate,
               contr.pricePerGB,
               contr.weiLeftToWithdraw,
               contr.withdrawedAtDate,
