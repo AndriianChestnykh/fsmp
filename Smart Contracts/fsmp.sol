@@ -2,12 +2,14 @@ pragma solidity ^0.4.0;
 
 contract fsmp {
     
-// this contract constructor is for testing purpose    
+// Uncomment this contract constructor if that is needed for testing purpose    
+// Note! It is better to transfer 100,000 wei or something into deployment transaction
+// to fill some value into BuyOrder
 /*  function fsmp() payable {
      createBuyOrder(100, 5);
      createStorageContract(0,1,1,"xxx.xxx.xxx.xxx:xxxxx"); 
      openStorageContract(0,1);
-  }*/    
+  }*/
     
   struct SellOrder{
 	uint id; //Sell Order Id (auto increment)
@@ -46,10 +48,6 @@ contract fsmp {
   uint buyOrderId; // auto increment unique id
   uint storageContractId; // auto increment unique id
   
-  uint public sellOrderCount; // real quantity
-  uint public buyOrderCount; // real quantity
-  uint public storageContractCount; // real quantity
-
   SellOrder[] sellOrderArr; // array of sell orders
   BuyOrder[]  buyOrderArr; // array of buy orders
   StorageContract[]  storageContractArr; // array of contracts
@@ -63,7 +61,6 @@ contract fsmp {
         buyOrderArr[buyOrderIndex] = buyOrderArr[buyOrderArr.length-1];
     }
     buyOrderArr.length--;
-    buyOrderCount--;
   }
   
   function deleteSellOrderFromArray (uint sellOrderIndex) internal {
@@ -72,7 +69,6 @@ contract fsmp {
         sellOrderArr[sellOrderIndex] = sellOrderArr[sellOrderArr.length-1];
     }
     sellOrderArr.length--;
-    sellOrderCount--;
   }  
   
   function weiAllowedToWithdraw(uint storageContractIndex) constant returns (uint weiAllowedToWithdraw) {
@@ -82,19 +78,70 @@ contract fsmp {
       return weiAllowedToWithdraw;
   }  
   
-  //################## Trading ##########################################################
- 
+  // ################## Trading ###################################################
+  // Buy Order 
+  
   function createBuyOrder(uint volumeGB, uint pricePerGB) payable {
       buyOrderArr.push(BuyOrder(++buyOrderId, msg.sender, volumeGB, pricePerGB, msg.value));
-      buyOrderCount++;
+  }  
+  
+  function cancelBuyOrder(uint buyOrderIndex, uint buyOrderID){
+      //check if user can cancel an order
+      if(buyOrderArr[buyOrderIndex].DO == msg.sender && buyOrderArr[buyOrderIndex].id == buyOrderID){
+            uint amount = buyOrderArr[buyOrderIndex].weiInitialAmount;
+            if (msg.sender.send(amount)) {
+                deleteBuyOrderFromArray(buyOrderIndex);
+                return;
+            } else {
+                throw;
+            }
+      }else{
+          throw;
+      }
   }
+  
+  function getBuyOrder(uint buyOrderIndex)constant returns(uint id,address DO,uint volume,uint pricePerGB,uint weiInitialAmount){
+      return (buyOrderArr[buyOrderIndex].id,
+              buyOrderArr[buyOrderIndex].DO,
+              buyOrderArr[buyOrderIndex].volumeGB,
+              buyOrderArr[buyOrderIndex].pricePerGB,
+              buyOrderArr[buyOrderIndex].weiInitialAmount);
+  }
+  
+  function buyOrdersLength() constant returns(uint) {
+      return buyOrderArr.length;
+  }
+
+  // Sell Order 
   
   function createSellOrder(uint volumeGB, uint pricePerGB, string IPAndPort) {
      sellOrderArr.push(SellOrder(++sellOrderId, msg.sender, volumeGB, pricePerGB, IPAndPort));
-     sellOrderCount++;
+  }  
+  
+    function getSellOrder(uint sellOrderIndex)constant returns(uint id,address DSO,uint volume,uint pricePerGB,string IPAndPort) {
+      return (sellOrderArr[sellOrderIndex].id,
+              sellOrderArr[sellOrderIndex].DSO,
+              sellOrderArr[sellOrderIndex].volumeGB,
+              sellOrderArr[sellOrderIndex].pricePerGB,
+              sellOrderArr[sellOrderIndex].IPAndPort);
+  }  
+  
+  function sellOrdersLength() constant returns(uint){
+    return sellOrderArr.length;
   }
-     
-  // ############################################################################
+  
+  function cancelSellOrder(uint sellOrderIndex, uint sellOrderID){
+      //check if user can cancel an order
+      if(sellOrderArr[sellOrderIndex].DSO == msg.sender && sellOrderArr[sellOrderIndex].id == sellOrderID){
+            deleteSellOrderFromArray(sellOrderIndex);
+          return;
+      }else{
+          throw;
+      }
+  }  
+
+  // ################## Escrow ###################################################  
+  // Storage Contract
   
     function createStorageContract(uint orderIndex, uint orderID, uint orderType, string IPAndPort) payable returns (uint newStorageContractID){
 
@@ -119,7 +166,6 @@ contract fsmp {
             0                                   //WeiWithdrawedAtDate - empty            
             ));
             
-        storageContractCount++;
         deleteBuyOrderFromArray(orderIndex);
         return storageContractId;
         
@@ -144,11 +190,9 @@ contract fsmp {
             0                                       //WeiWithdrawedAtDate - empty
             ));
             
-        storageContractCount++;
         deleteSellOrderFromArray(orderIndex);
         return storageContractId;
       }
-      
       throw;
   }
   
@@ -179,108 +223,7 @@ contract fsmp {
       //TODO: add DO/DSO check and index - id check
       storageContractArr[storageContractIndex].closeDate = now;
   }
-  
-  //
-  
-  function cancelBuyOrder(uint buyOrderIndex, uint buyOrderID){
-      
-      
-       //throw an exception if index bigger then array
-      //if (buyOrderIndex >= buyOrderArr.length) throw;
-
-      //check if user can cancel an order
-      if(buyOrderArr[buyOrderIndex].DO == msg.sender && buyOrderArr[buyOrderIndex].id == buyOrderID){
-         
-         
-            uint amount = buyOrderArr[buyOrderIndex].weiInitialAmount;
-        
-            if (msg.sender.send(amount)) {
-                
-                //delete buyOrderArr[buyOrderIndex];
-                
-                //if index not last element in the array
-                //if(buyOrderIndex != buyOrderArr.length-1){
-                //    buyOrderArr[buyOrderIndex] = buyOrderArr[buyOrderArr.length-1];
-                    //delete buyOrderArr[buyOrderArr.length-1];
-                //}
-                
-                //buyOrderArr.length--;
-                
-                deleteBuyOrderFromArray(buyOrderIndex);
-                
-                return;
-                
-                
-
-            } else {
-                
-                throw;
-            }
-          
-      }else{
-          throw;
-      }
-      
-  }
-  
-  function cancelSellOrder(uint sellOrderIndex, uint sellOrderID){
-      
-      //throw an exception if index bigger then array
-      //if (sellOrderIndex >= sellOrderArr.length) throw;
-      
-      //check if user can cancel an order
-      if(sellOrderArr[sellOrderIndex].DSO == msg.sender && sellOrderArr[sellOrderIndex].id == sellOrderID){
-          
-          //delete sellOrderArr[sellOrderIndex];
-          
-          //if index not last element in the array
-          // if(sellOrderIndex != sellOrderArr.length-1){
-                sellOrderArr[sellOrderIndex] = sellOrderArr[sellOrderArr.length-1];
-                //delete sellOrderArr[sellOrderArr.length-1];
-            //}
-            
-            //sellOrderArr.length--;
-            
-            deleteSellOrderFromArray(sellOrderIndex);
-          
-          return;
-      }else{
-          throw;
-      }
-      
-  }
-  
-  //Utility functions - constant
-  
-  //Buy order
-  //function getBuyOrder(uint buyOrderIndex, uint buyOrderID)constant returns(uint id,address DO,uint volume,uint pricePerGB,uint weiInitialAmount){
-  function getBuyOrder(uint buyOrderIndex)constant returns(uint id,address DO,uint volume,uint pricePerGB,uint weiInitialAmount){
-      return (buyOrderArr[buyOrderIndex].id,
-              buyOrderArr[buyOrderIndex].DO,
-              buyOrderArr[buyOrderIndex].volumeGB,
-              buyOrderArr[buyOrderIndex].pricePerGB,
-              buyOrderArr[buyOrderIndex].weiInitialAmount);
-  }
-  
-  function buyOrdersLength() constant returns(uint) {
-      return buyOrderArr.length;
-  }
-
-  //Sell order    
-  //function getSellOrder(uint sellOrderIndex, uint sellOrderID)constant returns(uint id,address DSO,uint volume,uint pricePerGB,string IPAndPort) {
-    function getSellOrder(uint sellOrderIndex)constant returns(uint id,address DSO,uint volume,uint pricePerGB,string IPAndPort) {
-      return (sellOrderArr[sellOrderIndex].id,
-              sellOrderArr[sellOrderIndex].DSO,
-              sellOrderArr[sellOrderIndex].volumeGB,
-              sellOrderArr[sellOrderIndex].pricePerGB,
-              sellOrderArr[sellOrderIndex].IPAndPort);
-  }  
-  
-  function sellOrdersLength() constant returns(uint){
-    return sellOrderArr.length;
-  }
-  
-  //Storage Contract
+    
   
   function getStorageContract(uint storageContractIndex) constant returns(
         uint id,
