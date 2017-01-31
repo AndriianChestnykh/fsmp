@@ -89,12 +89,10 @@ contract fsmp {
       //check if user can cancel an order
       if(buyOrderArr[buyOrderIndex].DO == msg.sender && buyOrderArr[buyOrderIndex].id == buyOrderID){
             uint amount = buyOrderArr[buyOrderIndex].weiInitialAmount;
-            if (msg.sender.send(amount)) {
-                deleteBuyOrderFromArray(buyOrderIndex);
-                return;
-            } else {
-                throw;
-            }
+            
+            deleteBuyOrderFromArray(buyOrderIndex);
+            
+            if (!msg.sender.send(amount)) throw;
       }else{
           throw;
       }
