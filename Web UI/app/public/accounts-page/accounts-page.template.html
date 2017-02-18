@@ -1,0 +1,14 @@
+<h1>Accounts</h1>
+<h4>Toatal balance: {{$ctrl.getTotalBalance($ctrl.accounts)}}</h4>
+<table>
+    <tr>
+        <th>Account</th>
+        <th>Balance</th>
+    </tr>
+    <tr ng-repeat="account in $ctrl.accounts">
+        <td>{{account}}</td>
+        <td>{{$ctrl.getAccountBalance(account)}}</td>
+    </tr>
+</table>
+
+

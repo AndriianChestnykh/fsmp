@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+    <link rel="stylesheet" href="css/main.css">
+    <title>File Storage Marketplace</title>
+
+    <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet"> -->
+</head>
+
+<body ng-app="fsmpApp">
+
+<header class="header">
+    <nav class="nav">
+        <ul class="nav__list">
+            <li><a href="#/main" class="nav__link">Main</a></li>
+            <li><a href="#/accounts" class="nav__link">Accounts</a></li>
+            <li><a href="#/contract" class="nav__link">Contract</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div ng-view></div>
+
+<script src="lib/bignumber.min.js"></script>
+<script src="lib/web3.min.js"></script>
+
+<script src="lib/angular.min.js"></script>
+<script src="lib/angular-route.min.js"></script>
+
+<script src="app/app.module.js"></script>
+<script src="app/app.routing.js"></script>
+
+<!-- Core Modules -->
+<script src="app/core/core.module.js"></script>
+<script src="app/core/web3/web3.service.js"></script>
+<script src="app/core/config/config.service.js"></script>
+
+<!-- Public Modules -->
+<script src="app/public/public.module.js"></script>
+
+<script src="app/public/main-page/main-page.component.js"></script>
+
+<script src="app/public/accounts-page/accounts-page.component.js"></script>
+
+<script src="app/public//contract-page/contract-page.component.js"></script>
+<script src="app/public/contract-page/orders-table/orders-table.component.js"></script>
+<script src="app/public/contract-page/storage-contracts/storage-contracts.component.js"></script>
+
+
+
+
+
+</body>
+</html>

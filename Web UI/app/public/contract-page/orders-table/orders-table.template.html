@@ -1,0 +1,45 @@
+<table>
+  <tr>
+    <th>ID</th>
+    <th>DO</th>
+    <th>volumeGB</th>
+    <th>pricePerGB</th>
+
+    <th ng-if="ordersTableCtrl.type === 'buy'">weiInitialAmount</th>
+
+    <th ng-if="ordersTableCtrl.type === 'sell'">IPAndPort</th>
+  </tr>
+
+  <tr ng-repeat="o in ordersTableCtrl.tableData">
+    <td>{{o.id}}</td>
+    <td>{{o.DO}}</td>
+    <td>{{o.volumeGB}}</td>
+    <td>{{o.pricePerGB}}</td>
+
+    <!-- Buy Order -->
+    <td ng-if="ordersTableCtrl.type === 'buy'">
+      {{o.weiInitialAmount}}
+    </td>
+
+    <!-- Sell Order -->
+    <td ng-if="ordersTableCtrl.type === 'sell'">
+      {{o.IPAndPort}}
+    </td>
+
+    <!-- Create SC from Public -->
+    <td ng-if="ordersTableCtrl.owner === 'public'">
+      <button
+        ng-click="ordersTableCtrl.createStorageContract(o.index, o.id, ordersTableCtrl.type)">
+        createStorageContract
+      </button>
+    </td>
+
+    <td ng-if="ordersTableCtrl.owner === 'me'">
+      <button ng-click="ordersTableCtrl.cancelOrder(ordersTableCtrl.type, o.index, o.id)">
+        Cancel
+      </button>
+    </td>
+  </tr>
+</table>
+
+<p ng-show="!ordersTableCtrl.tableData.length">No Orders for Today, Sorry...</p>
