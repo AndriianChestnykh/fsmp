@@ -11,9 +11,11 @@ function Web3Service(appConfig) {
 
 
   function getWeb3() {
-    var web3 = new Web3();
+    let web3 = new Web3();
 
-    web3.setProvider(new web3.providers.HttpProvider(appConfig.httpProvider));
+    let httpProvider = appConfig.getHttpProvider();
+
+    web3.setProvider(new web3.providers.HttpProvider(httpProvider));
 
     if (!web3.isConnected()) {
         alert('Node not found. Provide correct RPC server.')

@@ -8,7 +8,10 @@
     <tr ng-repeat="account in $ctrl.accounts">
         <td>{{account}}</td>
         <td>{{$ctrl.getAccountBalance(account)}}</td>
+        <td>
+          <button ng-click="$ctrl.setAsCurrent(account)">
+            Set As Current Account
+          </button>
+        </td>
     </tr>
 </table>
-
-

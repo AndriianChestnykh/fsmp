@@ -4,25 +4,31 @@
 angular.module('public')
 .component('storageContracts', {
   templateUrl: 'app/public/contract-page/storage-contracts/storage-contracts.template.html',
-  controller: storageContractsController,
-  controllerAs: 'storageContractsCtrl',
+  controller: StorageContractsController,
+  controllerAs: 'SCCtrl',
   bindings: {
     scData: '<',
     onContractManage: '&'
   }
 });
 
-function storageContractsController() {
-  let storageContractsCtrl = this;
+StorageContractsController.$inject = ['AccountsService'];
+function StorageContractsController(AccountsService) {
+  let SCCtrl = this;
 
-  storageContractsCtrl.manageStorageContract = (storageContractIndex,
-                                                storageContractID,
-                                                method) => {
-    storageContractsCtrl.onContractManage({
+  SCCtrl.currentAccount = AccountsService.getCurrentAccount();
+
+  SCCtrl.manageStorageContract = (storageContractIndex,
+                                  storageContractID,
+                                  method,
+                                  wei) => {
+    SCCtrl.onContractManage({
       storageContractIndex: storageContractIndex,
       storageContractID: storageContractIndex,
-      method: method
+      method: method,
+      wei: wei
     });
+
   };
 }
 
