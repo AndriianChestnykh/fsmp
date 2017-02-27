@@ -2,15 +2,6 @@ pragma solidity ^0.4.0;
 
 contract fsmp {
     
-// Uncomment this contract constructor if that is needed for testing purpose    
-// Note! It is better to transfer 100,000 wei or something into deployment transaction
-// to fill some value into BuyOrder
-/*  function fsmp() payable {
-     createBuyOrder(100, 5);
-     createStorageContract(0,1,1,"xxx.xxx.xxx.xxx:xxxxx"); 
-     startStorageContract(0,1);
-  }*/
-    
   struct SellOrder{
 	uint id; //Sell Order Id (auto increment)
 	address	DSO; //Data Storage Owner address of the contract
@@ -71,10 +62,24 @@ contract fsmp {
     sellOrderArr.length--;
   }  
   
+  function deleteStorageContractFromArray (uint storageContractIndex) internal {
+    //if index not last element in the array
+    if(storageContractIndex != storageContractArr.length-1){
+        storageContractArr[storageContractIndex] = storageContractArr[storageContractArr.length-1];
+    }
+    storageContractArr.length--;
+  }    
+  
   function weiAllowedToWithdraw(uint storageContractIndex) constant returns (uint weiAllowedToWithdraw) {
       var c = storageContractArr[storageContractIndex];
-      if (c.withdrawedAtDate == 0) return 0;
-      weiAllowedToWithdraw = (now - c.withdrawedAtDate) * c.pricePerGB * c.volumeGB;
+      if (c.startDate == 0) return 0;
+      uint calcToDate = now;
+      if (c.stopDate != 0) {
+          calcToDate = c.stopDate;}
+      
+      weiAllowedToWithdraw = (calcToDate - c.withdrawedAtDate) * c.pricePerGB * c.volumeGB;
+      if (weiAllowedToWithdraw >= c.weiLeftToWithdraw) {
+          weiAllowedToWithdraw = c.weiLeftToWithdraw;}
       return weiAllowedToWithdraw;
   }  
   
@@ -193,36 +198,85 @@ contract fsmp {
       }
       throw;
   }
-  
+ 
   function refillStorageContract(uint storageContractIndex, uint storageContractID) payable {
-      //TODO: add DO check and index - id check
       var c = storageContractArr[storageContractIndex];
+      if (msg.sender != c.DO) throw;
+      if (c.id != storageContractID) throw;
+      if (c.stopDate != 0) throw;
+      
       c.weiLeftToWithdraw += msg.value;
   }
   
   function withdrawFromStorageContract(uint storageContractIndex, uint storageContractID) returns(uint withdrawedWei) {
-      //TODO: add DSO check, index - id check, start/stop contract check, enough money check
-      uint watw = this.weiAllowedToWithdraw(storageContractIndex);
-      var c = storageContractArr[storageContractIndex];
-      c.weiLeftToWithdraw -= watw;
-      c.withdrawedAtDate = now;
-      if (!msg.sender.send(watw)) throw;
+    var c = storageContractArr[storageContractIndex];
+    if (msg.sender != c.DSO && msg.sender != c.DO) throw;
+    if (c.id != storageContractID) throw;
+    if (c.startDate == 0) throw;
+    
+    withdrawedWei = this.weiAllowedToWithdraw(storageContractIndex);
 
-      return watw;
+    if (msg.sender == c.DSO && withdrawedWei != 0) {
+        // if the storage contract is active then withdraw by DSO has sence
+        c.weiLeftToWithdraw -= withdrawedWei;
+        c.withdrawedAtDate = now;
+        if(!msg.sender.send(withdrawedWei)) throw;
+        // if DO stopped contract before then weiAllowedToWithdraw can be not zero and withdraw is OK
+        // if DSO stopped contract before then weiAllowedToWithdraw should be zero and withdraw will not occur        
+        if(c.stopDate != 0){
+            deleteStorageContractFromArray(storageContractIndex);            
+        }
+        return withdrawedWei;
+    }
+    
+    if (msg.sender == c.DO && c.stopDate != 0){
+        // if DO stopped contract before then weiAllowedToWithdraw can be not zero, 
+        //which means that DO is trying take the money more that one time
+        // if DSO stopped contract before then weiAllowedToWithdraw should be zero
+        if (withdrawedWei != 0) throw;
+        withdrawedWei = c.weiLeftToWithdraw;
+        c.weiLeftToWithdraw -= withdrawedWei;
+        if(!msg.sender.send(withdrawedWei)) throw;
+        deleteStorageContractFromArray(storageContractIndex);
+        return withdrawedWei;
+    }
+    
+    throw;
   }
   
   function startStorageContract(uint storageContractIndex, uint storageContractID) {
-      //TODO: add DO check and index - id check
+      var c = storageContractArr[storageContractIndex];      
+      if (msg.sender != c.DO) throw;
+      if (c.id != storageContractID) throw;      
       storageContractArr[storageContractIndex].startDate = now;
       storageContractArr[storageContractIndex].withdrawedAtDate = now;
   }
   
-  function stopStorageContract(uint storageContractIndex, uint storageContractID) {
-      //TODO: add DO/DSO check and index - id check
-      storageContractArr[storageContractIndex].stopDate = now;
-  }
+  function stopStorageContract(uint storageContractIndex, uint storageContractID) returns(uint withdrawedWei) {
+    var c = storageContractArr[storageContractIndex];      
+    if (c.id != storageContractID) throw; 
+    if (c.stopDate != 0) throw;       //protect from reentrance attack
+    if (msg.sender != c.DO && msg.sender != c.DSO) throw;
     
-  
+    c.stopDate = now;           
+    withdrawedWei = this.weiAllowedToWithdraw(storageContractIndex);  
+    
+    if (msg.sender == c.DO){    
+        withdrawedWei = c.weiLeftToWithdraw - withdrawedWei;
+    }
+ 
+    if (msg.sender == c.DSO){    
+        c.withdrawedAtDate = now;
+    }
+    
+    c.weiLeftToWithdraw -= withdrawedWei;    
+    if (!msg.sender.send(withdrawedWei)) throw;        
+
+    if (c.weiLeftToWithdraw == 0) {
+        deleteStorageContractFromArray(storageContractIndex);
+    }
+  }
+
   function getStorageContract(uint storageContractIndex) constant returns(
         uint id,
         address DO, 
