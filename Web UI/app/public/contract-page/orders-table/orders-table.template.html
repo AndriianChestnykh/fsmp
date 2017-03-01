@@ -10,7 +10,10 @@
     <th ng-if="ordersTableCtrl.type === 'sell'">IPAndPort</th>
   </tr>
 
-  <tr ng-repeat="o in ordersTableCtrl.tableData">
+  <tr
+    ng-repeat="o in ordersTableCtrl.tableData"
+    ng-if="ordersTableCtrl.owner === 'public' ||
+           o.DO === ordersTableCtrl.currentAccount">
     <td>{{o.id}}</td>
     <td>{{o.DO}}</td>
     <td>{{o.volumeGB}}</td>

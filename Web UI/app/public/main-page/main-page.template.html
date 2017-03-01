@@ -1,6 +1,11 @@
 <h1>Main</h1>
-<p>geth.exe --testnet --fast console</p>
+
+<input type="text" ng-model="address"/>
+<button ng-click="mainPageCtrl.setContractAddress(address); address = ''">Set contractAddress</button> <br>
+
+<input type="text" ng-model="httpProvider"/>
+<button ng-click="mainPageCtrl.setHttpProvider(httpProvider); httpProvider = ''">Set httpProvider</button>
+
+<!-- <p>geth.exe --testnet --fast console</p>
 <p>admin.startRPC("127.0.0.1", 8545, "*", "db,eth,net,web3,personal,accounts")</p>
-<p>https://testnet.etherscan.io</p>
-
-
+<p>https://testnet.etherscan.io</p> -->

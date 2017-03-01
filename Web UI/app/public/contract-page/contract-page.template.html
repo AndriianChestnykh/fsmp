@@ -1,3 +1,5 @@
+<h1>Current Account is: <mark>{{$ctrl.getCurrentAccount()}}</mark></h1>
+
 <label>Account password:
     <input type="password" ng-model="password"/>
 </label>
@@ -19,25 +21,25 @@
 <label>weiInitialAmount:
     <input type="number" ng-model="cbo.weiInitialAmount"/>
 </label>
-<button ng-click="$ctrl.createBuyOrder(cbo);">createBuyOrder</button>
+<button ng-click="$ctrl.createBuyOrder(cbo)" ng-disabled="$ctrl.createBuyOrderDisabled">createBuyOrder</button>
 <hr>
 
 <h3>All Buy Orders</h3>
 <orders-table
-  table-data="$ctrl.allBuyOrders"
+  table-data="$ctrl.buyOrders"
   type="buy"
   owner="public"
   on-cancel="$ctrl.cancelOrder(type, index, id)"
   on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, IPAndPort)">
 </orders-table>
 <label>
-  <button type="button" ng-click="$ctrl.getAllBuyOrders()">getBuyOrders</button>
+  <button type="button" ng-click="$ctrl.getBuyOrders()">getBuyOrders</button>
 </label>
 <hr>
 
 <h3>My Buy Orders</h3>
 <orders-table
-  table-data="$ctrl.myBuyOrders"
+  table-data="$ctrl.buyOrders"
   type="buy"
   owner="me"
   on-cancel="$ctrl.cancelOrder(type, index, id)"
@@ -68,20 +70,20 @@
 
 <h3>All Sell Orders</h3>
 <orders-table
-  table-data="$ctrl.allSellOrders"
+  table-data="$ctrl.sellOrders"
   type="sell"
   owner="public"
   on-cancel="$ctrl.cancelOrder(type, index, id)"
   on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, IPAndPort)">
 </orders-table>
 <label>
-  <button type="button" ng-click="$ctrl.getAllSellOrders()">getSellOrders</button>
+  <button type="button" ng-click="$ctrl.getSellOrders()">getSellOrders</button>
 </label>
 <hr>
 
 <h3>My Sell Orders</h3>
 <orders-table
-  table-data="$ctrl.mySellOrders"
+  table-data="$ctrl.sellOrders"
   type="sell"
   owner="me"
   on-cancel="$ctrl.cancelOrder(type, index, id)"
@@ -102,7 +104,7 @@
 
 <storage-contracts
   sc-data="$ctrl.allStorageContracts"
-  on-contract-manage="$ctrl.manageStorageContract(storageContractIndex, storageContractID, method)">
+  on-contract-manage="$ctrl.manageStorageContract(storageContractIndex, storageContractID, method, wei)">
 </storage-contracts>
 
 <label>
@@ -113,6 +115,6 @@
 <h3>My Storage Contracts</h3>
 <storage-contracts
   sc-data="$ctrl.myStorageContracts"
-  on-contract-manage="$ctrl.manageStorageContract(storageContractIndex, storageContractID, method)">
+  on-contract-manage="$ctrl.manageStorageContract(storageContractIndex, storageContractID, method, wei)">
 </storage-contracts>
 <hr>
