@@ -3,27 +3,29 @@
     <th>ID</th>
     <th>DO address</th>
     <th>DSO address</th>
-    <th>IP and Port</th>
+    <th>DOConnectionInfo</th>
+    <th>DSOConnectionInfo</th>
     <th>Volume, GB</th>
     <th>Start Date</th>
     <th>Stop Date</th>
     <th>Price per GB</th>
     <th>Wei left to withdraw</th>
     <th>Withdrawed at date</th>
-    <th>Wei allowed to withdraw</th>
+    <!-- <th>Wei allowed to withdraw</th> -->
   </tr>
   <tr ng-repeat="sc in SCCtrl.scData">
     <td>{{sc.id}}</td>
     <td>{{sc.DOAddress}}</td>
     <td>{{sc.DSOAddress}}</td>
-    <td>{{sc.IPAndPort}}</td>
+    <td>{{sc.DOConnectionInfo}}</td>
+    <td>{{sc.DSOConnectionInfo}}</td>
     <td>{{sc.volumeGB}}</td>
     <td>{{sc.startDate}}</td>
     <td>{{sc.stopDate}}</td>
     <td>{{sc.pricePerGB}}</td>
     <td>{{sc.weiLeftToWithdraw}}</td>
     <td>{{sc.withdrawedAtDate}}</td>
-    <td>{{sc.weiAllowedToWithdraw}}</td>
+    <!-- <td>{{sc.weiAllowedToWithdraw}}</td> -->
 
     <td>
       <button

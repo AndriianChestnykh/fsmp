@@ -52,6 +52,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
         .sendTransaction(
           cbo.volumeGB,
           cbo.pricePerGB,
+          cbo.connectionInfo,
           {from: currentAccount,
             value: cbo.weiInitialAmount,
             gas: 1000000},
@@ -73,7 +74,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
           .sendTransaction(
             cso.volumeGB,
             cso.pricePerGB,
-            cso.IPAndPort,
+            cso.connectionInfo,
             {from: currentAccount,
               value: 0,
               gas: 1000000}
@@ -81,20 +82,20 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
         getSellOrders();
     }
 
-    function createStorageContract(orderIndex, orderId, orderType, IPAndPort) {
-      console.log('Contract...');
+    function createStorageContract(orderIndex, orderId, orderType, connectionInfo) {
       let transactionID = contract
         .createStorageContract
         .sendTransaction(
           orderIndex,
           orderId,
           orderType,
-          IPAndPort,
+          connectionInfo,
           { from: currentAccount,
             value: 0,
             gas: 1000000}
         );
-        console.log('Contract created...');
+        getBuyOrders();
+        getSellOrders();
         getAllStorageContracts();
     }
 
@@ -102,7 +103,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
       contract.getBuyOrder(index, (error, result) => {
 
         if (error) {
-          console.log(error);
+          console.log('Error occured on getting buy orders:', error);
         } else {
 
           let gboArr = result;
@@ -112,6 +113,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
             volumeGB: parseFloat(gboArr[2]),
             pricePerGB: parseFloat(gboArr[3]),
             weiInitialAmount: parseFloat(gboArr[4]),
+            connectionInfo: gboArr[5],
             index: index
           };
 
@@ -134,7 +136,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
         DO: soArr[1],
         volumeGB: parseFloat(soArr[2]),
         pricePerGB: parseFloat(soArr[3]),
-        IPAndPort: soArr[4],
+        connectionInfo: soArr[4],
         index: index
       };
     }
@@ -145,15 +147,14 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
         id: +scArr[0],
         DOAddress: scArr[1],
         DSOAddress: scArr[2],
-        IPAndPort: scArr[3],
-        volumeGB: parseFloat(scArr[4]),
-        startDate: parseDate(scArr[5]),
-        //TODO: do something with date :)
-        stopDate: parseDate(scArr[6]),
-        pricePerGB: parseFloat(scArr[7]),
-        weiLeftToWithdraw: parseFloat(scArr[8]),
-        withdrawedAtDate: parseFloat(scArr[9]),
-        weiAllowedToWithdraw: parseFloat(scArr[10]),
+        DOConnectionInfo: scArr[3],
+        DSOConnectionInfo: scArr[4],
+        volumeGB: parseFloat(scArr[5]),
+        startDate: parseDate(scArr[6]),
+        stopDate: parseDate(scArr[7]),
+        pricePerGB: parseFloat(scArr[8]),
+        weiLeftToWithdraw: parseFloat(scArr[9]),
+        withdrawedAtDate: parseFloat(scArr[10]),
         index: index
       };
     }
