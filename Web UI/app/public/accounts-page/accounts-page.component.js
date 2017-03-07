@@ -9,21 +9,28 @@ angular.module('public')
 
 AccountsPageController.$inject = ['appConfig', 'Web3Service', 'AccountsService'];
 function AccountsPageController(appConfig, Web3Service, AccountsService) {
-  var web3 = Web3Service.getWeb3();
-
-  this.accounts = web3.eth.accounts;
+  let web3 = Web3Service.getWeb3();
 
   let ctrl = this;
 
-  ctrl.getTotalBalance = getTotalBalance;
-  ctrl.getAccountBalance = getAccountBalance;
-  ctrl.setAsCurrent = setAsCurrent;
+  ctrl.$onInit = onInit;
 
-  function getTotalBalance(accounts) {
-      var totalBalance = 0;
+  ctrl.accounts = [];
+  ctrl.setAsCurrent = setAsCurrent;
+  ctrl.createAccount = createAccount;
+
+  function getAllBalances(accounts) {
+      var totalBalance = 0, accountNumber, accountBalance;
       for(var i = 0; i < accounts.length; i++) {
-          var accountBalance = web3.fromWei(web3.eth.getBalance(accounts[i]));
-          totalBalance += parseFloat(accountBalance);
+          accountNumber = accounts[i];
+
+          accountBalance = web3.fromWei(web3.eth.getBalance(accountNumber));
+          accountBalance = parseFloat(accountBalance);
+          ctrl.accounts.push({
+            number: accountNumber,
+            balance: accountBalance
+          });
+          totalBalance += accountBalance;
       }
       return totalBalance;
   }
@@ -34,12 +41,19 @@ function AccountsPageController(appConfig, Web3Service, AccountsService) {
   }
 
   function setAsCurrent(acc) {
-    AccountsService.setCurrentAccount(acc);
+    ctrl.currentAccount = AccountsService.setCurrentAccount(acc);
   }
 
-  // console.log(getTotalBalance(this.accounts));
-  // console.log(getAccountBalance(this.accounts[0]));
-  // console.log(getAccountBalance(this.accounts[1]));
+  function createAccount(password) {
+    ctrl.newAccount = web3.personal.newAccount(password);
+    console.log('password ->', password, '\naccount ->', account);
+    ctrl.totalBalance = getAllBalances(web3.eth.accounts);
+  }
+
+  function onInit() {
+    ctrl.totalBalance = getAllBalances(web3.eth.accounts);
+    ctrl.currentAccount = AccountsService.getCurrentAccount();
+  }
 }
 
 }());
