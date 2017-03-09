@@ -1,0 +1,30 @@
+<ul style="list-style-type: none">
+	<li>
+		<a id='config-result'></a>
+		<button ng-click="getConfig()">Config</button>
+	</li>
+	<li>
+		<input id="name" type="text" ng-model="apiKey">
+		<a>Api key</a>
+	</li>
+	<li>
+		<a>Device id</a>
+		<input id="deviceId" type="text" ng-model="deviceId"/>
+		<a>Device name</a>
+		<input id="name" type="text" ng-model="name">
+		<a id='message'></a>
+		<button ng-click="addDevice()">Add device</button>		
+	</li>
+	<li>
+		<a>Device id</a>
+		<input id="deviceId" type="text" ng-model="deviceId_r"/>
+		<a id='message_r'></a>
+		<button ng-click="removeDevice()">Remove device</button>		
+	</li>
+	<li>
+		<a>Device id</a>
+		<input id="deviceId" type="text" ng-model="deviceId_p"/>
+		<a id='update'></a>
+		<button ng-click="changeDeviceState()">Change device state</button>	
+	</li>
+</ul>
