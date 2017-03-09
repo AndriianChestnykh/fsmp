@@ -13,6 +13,9 @@ config(['$locationProvider', '$routeProvider',
     when('/accounts', {
         template: '<accounts-page></accounts-page>'
     }).
-    otherwise('/main');
+    when('/sync', {
+        template: '<sync-page></sync-page>'
+    })
+    .otherwise('/main');
   }
 ]);
