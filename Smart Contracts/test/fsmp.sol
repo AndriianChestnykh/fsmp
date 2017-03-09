@@ -1,13 +1,13 @@
 pragma solidity ^0.4.0;
 
 contract fsmp {
-    
+
   struct SellOrder{
-	uint id;          //Sell Order Id (auto increment)
-	address	DSO;      //Data Storage Owner address of the contract
-	uint volumeGB;    //Volume of disk space, which DSO is ready to sell.
-	uint pricePerGB;  //	Min price in wei DSO ready to get for 1 second (will be 1 day in real case) per 1 GB storage
-	string DSOConnectionInfo;  //Specific info to connect to DSO securely
+	uint id; //Sell Order Id (auto increment)
+	address	DSO; //Data Storage Owner address of the contract
+	uint volumeGB; //Volume of disk space, which DSO is ready to sell.
+	uint pricePerGB; //	Min price in wei DSO ready to get for 1 second (will be 1 day in real case) per 1 GB storage
+	string IPAndPort;//IP and port of Data Storage Owner
   }
 
   struct BuyOrder{
@@ -19,15 +19,13 @@ contract fsmp {
                            // the moment of Buy Order creation.
                            // So it represent real value, that Escrow logic currently manage
                            // (and real DO intention to pay for future Storage Contract)
-    string DOConnectionInfo; //Specific info to conect to DO securely
   }
 
   struct StorageContract{
     uint id; //ContractID (auto increment)
     address DO; //Data owner address of the contract
     address DSO; //Data storage owner address
-    string DOConnectionInfo; //Specific info to connect to DO securely
-    string DSOConnectionInfo; //Specific info to conect to DSO securely
+    string IPAndPort; //IP/port of data storage owner
     uint volumeGB; //Volume of disk space, which can be provided by DSO.
     uint startDate; //Date and time, which, if exists, indicates that the contract has been started
     uint stopDate;	//Date and time, which, if exists, indicates that the contract has been stopped
@@ -72,23 +70,24 @@ contract fsmp {
     storageContractArr.length--;
   }
 
-  function weiAllowedToWithdraw(uint storageContractIndex) internal constant returns (uint weiAllowedToWithdraw) {
+  function weiAllowedToWithdraw(uint storageContractIndex) constant returns (uint weiAllowedToWithdraw) {
       var c = storageContractArr[storageContractIndex];
       if (c.startDate == 0) return 0;
       uint calcToDate = now;
-      if (c.stopDate != 0) calcToDate = c.stopDate;
+      if (c.stopDate != 0) {
+          calcToDate = c.stopDate;}
 
       weiAllowedToWithdraw = (calcToDate - c.withdrawedAtDate) * c.pricePerGB * c.volumeGB;
-      if (weiAllowedToWithdraw >= c.weiLeftToWithdraw) weiAllowedToWithdraw = c.weiLeftToWithdraw;
-
+      if (weiAllowedToWithdraw >= c.weiLeftToWithdraw) {
+          weiAllowedToWithdraw = c.weiLeftToWithdraw;}
       return weiAllowedToWithdraw;
   }
 
   // ################## Trading ###################################################
   // Buy Order
 
-  function createBuyOrder(uint volumeGB, uint pricePerGB, string DOConnectionInfo) payable {
-      buyOrderArr.push(BuyOrder(++buyOrderId, msg.sender, volumeGB, pricePerGB, msg.value, DOConnectionInfo));
+  function createBuyOrder(uint volumeGB, uint pricePerGB) payable {
+      buyOrderArr.push(BuyOrder(++buyOrderId, msg.sender, volumeGB, pricePerGB, msg.value));
   }
 
   function cancelBuyOrder(uint buyOrderIndex, uint buyOrderID){
@@ -104,13 +103,12 @@ contract fsmp {
       }
   }
 
-  function getBuyOrder(uint buyOrderIndex)constant returns(uint id, address DO, uint volume, uint pricePerGB, uint weiInitialAmount, string DOConnectionInfo){
+  function getBuyOrder(uint buyOrderIndex)constant returns(uint id,address DO,uint volume,uint pricePerGB,uint weiInitialAmount){
       return (buyOrderArr[buyOrderIndex].id,
               buyOrderArr[buyOrderIndex].DO,
               buyOrderArr[buyOrderIndex].volumeGB,
               buyOrderArr[buyOrderIndex].pricePerGB,
-              buyOrderArr[buyOrderIndex].weiInitialAmount,
-              buyOrderArr[buyOrderIndex].DOConnectionInfo);
+              buyOrderArr[buyOrderIndex].weiInitialAmount);
   }
 
   function buyOrdersLength() constant returns(uint) {
@@ -119,16 +117,16 @@ contract fsmp {
 
   // Sell Order
 
-  function createSellOrder(uint volumeGB, uint pricePerGB, string DSOConnectionInfo) {
-     sellOrderArr.push(SellOrder(++sellOrderId, msg.sender, volumeGB, pricePerGB, DSOConnectionInfo));
+  function createSellOrder(uint volumeGB, uint pricePerGB, string IPAndPort) {
+     sellOrderArr.push(SellOrder(++sellOrderId, msg.sender, volumeGB, pricePerGB, IPAndPort));
   }
 
-    function getSellOrder(uint sellOrderIndex)constant returns(uint id, address DSO, uint volume, uint pricePerGB, string DSOConnectionInfo) {
+    function getSellOrder(uint sellOrderIndex)constant returns(uint id,address DSO,uint volume,uint pricePerGB,string IPAndPort) {
       return (sellOrderArr[sellOrderIndex].id,
               sellOrderArr[sellOrderIndex].DSO,
               sellOrderArr[sellOrderIndex].volumeGB,
               sellOrderArr[sellOrderIndex].pricePerGB,
-              sellOrderArr[sellOrderIndex].DSOConnectionInfo);
+              sellOrderArr[sellOrderIndex].IPAndPort);
   }
 
   function sellOrdersLength() constant returns(uint){
@@ -148,20 +146,21 @@ contract fsmp {
   // ################## Escrow ###################################################
   // Storage Contract
 
-    function createStorageContract(uint orderIndex, uint orderID, uint orderType, string connectionInfo) payable returns (uint newStorageContractID){
+    function createStorageContract(uint orderIndex, uint orderID, uint orderType, string IPAndPort) payable returns (uint newStorageContractID){
 
       //DSO calls the contract, orderType = "buy"
       if (orderType == 1) {
 
         //check if Buy Order id is equal to expected to avoid working with wrong or deleted Buy Order
-        if (buyOrderArr[orderIndex].id != orderID) throw;
+        if (buyOrderArr[orderIndex].id != orderID) {
+            throw;
+        }
 
         storageContractArr.push(StorageContract(
             ++storageContractId,                //ContractID - auto increment
             buyOrderArr[orderIndex].DO,         //DO - from the BuyOrder data
             msg.sender,                         //DSO - from msg.sender (the function caller address)
-            buyOrderArr[orderIndex].DOConnectionInfo, //DOConnectionInfo
-            connectionInfo,                     //DSOConnectionInfo
+            IPAndPort,                          //IPAndPort - from input IPAndPort param
             buyOrderArr[orderIndex].volumeGB,   //VolumeGB - from the BuyOrder data
             0,                                  //StartDate - empty
             0,                                  //StopDate - empty
@@ -185,8 +184,7 @@ contract fsmp {
             ++storageContractId,                    //ContractID - auto increment
             msg.sender,                             //DO - from msg.sender (the function caller address)
             sellOrderArr[orderIndex].DSO,           //DSO - from the SellOrder data
-            connectionInfo,                        //DOConnectionInfo
-            sellOrderArr[orderIndex].DSOConnectionInfo, //DSOConnectionInfo
+            sellOrderArr[orderIndex].IPAndPort,    //IPAndPort - from the SellOrder data
             sellOrderArr[orderIndex].volumeGB,    //VolumeGB - from the SellOrder data
             0,                                      //StartDate - empty
             0,                                      //StopDate - empty
@@ -216,7 +214,7 @@ contract fsmp {
     if (c.id != storageContractID) throw;
     if (c.startDate == 0) throw;
 
-    withdrawedWei = weiAllowedToWithdraw(storageContractIndex);
+    withdrawedWei = this.weiAllowedToWithdraw(storageContractIndex);
 
     if (msg.sender == c.DSO && withdrawedWei != 0) {
         // if the storage contract is active then withdraw by DSO has sence
@@ -261,7 +259,7 @@ contract fsmp {
     if (msg.sender != c.DO && msg.sender != c.DSO) throw;
 
     c.stopDate = now;
-    withdrawedWei = weiAllowedToWithdraw(storageContractIndex);
+    withdrawedWei = this.weiAllowedToWithdraw(storageContractIndex);
 
     if (msg.sender == c.DO){
         withdrawedWei = c.weiLeftToWithdraw - withdrawedWei;
@@ -283,25 +281,23 @@ contract fsmp {
         uint id,
         address DO,
         address DSO,
-        string DOConnectionInfo,
-        string DSOConnectionInfo,
+        string IPandPort,
         uint volumeGB,
         uint startDate,
         uint stopDate,
         uint pricePerGB,
         uint weiLeftToWithdraw,
         uint withdrawedAtDate,
-        uint weiAllowedToWithdraw_Output
+        uint weiAllowedToWithdraw
     ) {
 
       var contr = storageContractArr[storageContractIndex];
-      var watw = weiAllowedToWithdraw(storageContractIndex);
+      uint watw = this.weiAllowedToWithdraw(storageContractIndex);
 
       return (contr.id,
               contr.DO,
               contr.DSO,
-              contr.DOConnectionInfo,
-              contr.DSOConnectionInfo,
+              contr.IPAndPort,
               contr.volumeGB,
               contr.startDate,
               contr.stopDate,
@@ -311,7 +307,7 @@ contract fsmp {
               watw
               );
   }
-  
+
   function storageContractsLength() constant returns(uint){
       return storageContractArr.length;
   }

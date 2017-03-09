@@ -29,10 +29,8 @@ function OrdersTableController(AccountsService) {
     });
   };
 
-  ordersTableCtrl.createStorageContract = function(orderIndex, orderId, type) {
-    //FIXME: get REAL ip and port
-    let IPAndPort = document.location.host,
-        orderType;
+  ordersTableCtrl.createStorageContract = function(orderIndex, orderId, type, connectionInfo) {
+    let orderType;
 
     if (type == 'buy') {
       orderType = 1;
@@ -46,7 +44,7 @@ function OrdersTableController(AccountsService) {
       orderIndex: orderIndex,
       orderId: orderId,
       orderType: orderType,
-      IPAndPort: IPAndPort
+      connectionInfo: connectionInfo
     });
   }
 }

@@ -1,0 +1,55 @@
+<table>
+  <tr>
+    <th>ID</th>
+    <th>DO address</th>
+    <th>DSO address</th>
+    <th>IP and Port</th>
+    <th>Volume, GB</th>
+    <th>Start Date</th>
+    <th>Stop Date</th>
+    <th>Price per GB</th>
+    <th>Wei left to withdraw</th>
+    <th>Withdrawed at date</th>
+    <th>Wei allowed to withdraw</th>
+  </tr>
+  <tr ng-repeat="sc in SCCtrl.scData">
+    <td>{{sc.id}}</td>
+    <td>{{sc.DOAddress}}</td>
+    <td>{{sc.DSOAddress}}</td>
+    <td>{{sc.IPAndPort}}</td>
+    <td>{{sc.volumeGB}}</td>
+    <td>{{sc.startDate}}</td>
+    <td>{{sc.stopDate}}</td>
+    <td>{{sc.pricePerGB}}</td>
+    <td>{{sc.weiLeftToWithdraw}}</td>
+    <td>{{sc.withdrawedAtDate}}</td>
+    <td>{{sc.weiAllowedToWithdraw}}</td>
+
+    <td>
+      <button
+      ng-if="sc.DOAddress === SCCtrl.currentAccount"
+      ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'startStorageContract')">
+        startStorageContract
+      </button>
+    </td>
+    <td>
+      <button ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'stopStorageContract')">
+        stopStorageContract
+      </button>
+    </td>
+    <td>
+      <button
+      ng-if="sc.DSOAddress === SCCtrl.currentAccount"
+      ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'withdrawFromStorageContract')">
+        withdrawFromStorageContract
+      </button>
+    </td>
+    <td ng-if="sc.DOAddress === SCCtrl.currentAccount">
+      <button
+      ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'refillStorageContract', SCCtrl[wei + sc.id])">
+        refillStorageContract
+      </button>
+      <input type="text" ng-model="SCCtrl[wei + sc.id]" />
+    </td>
+  </tr>
+</table>

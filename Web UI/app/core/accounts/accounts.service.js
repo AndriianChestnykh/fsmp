@@ -13,7 +13,7 @@ function AccountsService(Web3Service) {
 
   AccountsService.getCurrentAccount = () => currentAccount;
   AccountsService.setCurrentAccount = (acc) => {
-    currentAccount = acc;
+    return currentAccount = acc;
   };
 }
 

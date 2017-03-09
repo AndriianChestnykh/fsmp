@@ -18,6 +18,9 @@
 <label>pricePerGB:
     <input type="number" ng-model="cbo.pricePerGB"/>
 </label>
+<label>connectionInfo:
+    <input type="text" ng-model="cbo.connectionInfo"/>
+</label>
 <label>weiInitialAmount:
     <input type="number" ng-model="cbo.weiInitialAmount"/>
 </label>
@@ -29,8 +32,7 @@
   table-data="$ctrl.buyOrders"
   type="buy"
   owner="public"
-  on-cancel="$ctrl.cancelOrder(type, index, id)"
-  on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, IPAndPort)">
+  on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, connectionInfo)">
 </orders-table>
 <label>
   <button type="button" ng-click="$ctrl.getBuyOrders()">getBuyOrders</button>
@@ -42,8 +44,7 @@
   table-data="$ctrl.buyOrders"
   type="buy"
   owner="me"
-  on-cancel="$ctrl.cancelOrder(type, index, id)"
-  on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, IPAndPort)">
+  on-cancel="$ctrl.cancelOrder(type, index, id)">
 </orders-table>
 
 
@@ -61,8 +62,8 @@
 <label>pricePerGB:
     <input type="number" ng-model="cso.pricePerGB"/>
 </label>
-<label>IPAndPort:
-    <input type="text" ng-model="cso.IPAndPort"/>
+<label>connectionInfo:
+    <input type="text" ng-model="cso.connectionInfo"/>
 </label>
 <button ng-click="$ctrl.createSellOrder(cso);">createSellOrder</button>
 <hr>
@@ -73,8 +74,7 @@
   table-data="$ctrl.sellOrders"
   type="sell"
   owner="public"
-  on-cancel="$ctrl.cancelOrder(type, index, id)"
-  on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, IPAndPort)">
+  on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, connectionInfo)">
 </orders-table>
 <label>
   <button type="button" ng-click="$ctrl.getSellOrders()">getSellOrders</button>
@@ -86,8 +86,7 @@
   table-data="$ctrl.sellOrders"
   type="sell"
   owner="me"
-  on-cancel="$ctrl.cancelOrder(type, index, id)"
-  on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, IPAndPort)">
+  on-cancel="$ctrl.cancelOrder(type, index, id)">
 </orders-table>
 <hr>
 

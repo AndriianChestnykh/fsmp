@@ -1,0 +1,10 @@
+version: '2'
+services:
+  geth:
+    build: .
+    volumes:
+    - ./logs:/logs
+    ports:
+     - "30310:30310"
+     - "8110:8110"
+     - "6110:6110"

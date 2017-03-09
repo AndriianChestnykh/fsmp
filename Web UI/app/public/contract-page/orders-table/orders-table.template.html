@@ -4,10 +4,9 @@
     <th>DO</th>
     <th>volumeGB</th>
     <th>pricePerGB</th>
+    <th>connectionInfo</th>
 
     <th ng-if="ordersTableCtrl.type === 'buy'">weiInitialAmount</th>
-
-    <th ng-if="ordersTableCtrl.type === 'sell'">IPAndPort</th>
   </tr>
 
   <tr
@@ -18,23 +17,24 @@
     <td>{{o.DO}}</td>
     <td>{{o.volumeGB}}</td>
     <td>{{o.pricePerGB}}</td>
+    <td>{{o.connectionInfo}}</td>
 
     <!-- Buy Order -->
     <td ng-if="ordersTableCtrl.type === 'buy'">
       {{o.weiInitialAmount}}
     </td>
 
-    <!-- Sell Order -->
-    <td ng-if="ordersTableCtrl.type === 'sell'">
-      {{o.IPAndPort}}
-    </td>
-
     <!-- Create SC from Public -->
     <td ng-if="ordersTableCtrl.owner === 'public'">
       <button
-        ng-click="ordersTableCtrl.createStorageContract(o.index, o.id, ordersTableCtrl.type)">
+        ng-click="ordersTableCtrl.createStorageContract(o.index, o.id, ordersTableCtrl.type, connectionInfo)"
+        ng-disabled="!connectionInfo">
         createStorageContract
       </button>
+      <label>
+        My connectionInfo
+        <input type="text" ng-model="connectionInfo">
+      </label>
     </td>
 
     <td ng-if="ordersTableCtrl.owner === 'me'">
