@@ -34,8 +34,10 @@ function logTime(){
  console.log(datetime);
 }
 
-
-function callRaw(account, contract, funcName, params, val){
+/**
+logOperation - if true result will be shown on the console;
+*/
+function callRaw(logOperation ,account, contract, funcName, params, val){
 
   //Unlock account
   personal.unlockAccount(account, "");
@@ -71,15 +73,25 @@ function callRaw(account, contract, funcName, params, val){
   var tx = eth.getTransactionReceipt(res);
 
   //Log result
-  log(">>>DEBUG: ('"+ funcName +"')  InitBalance:"+beforeBalance+ ", AfterBalance:"+afterBalance +", Delata:"+ deltaBalance +" ,estimateGas:"+estimateGas+", cumulativeGasUsed:"+tx.cumulativeGasUsed + ", gasUsed:"+tx.gasUsed);
-  log(">>>CSV,"+ funcName +","+beforeBalance+ ","+afterBalance +","+ deltaBalance +","+estimateGas+","+tx.cumulativeGasUsed + ","+tx.gasUsed);
+  if(logOperation == true){
+    log(">>>DEBUG: ('"+ funcName +"')  InitBalance:"+beforeBalance+ ", AfterBalance:"+afterBalance +", Delata:"+ deltaBalance +" ,estimateGas:"+estimateGas+", cumulativeGasUsed:"+tx.cumulativeGasUsed + ", gasUsed:"+tx.gasUsed);
+    log(">>>CSV,"+ funcName +","+beforeBalance+ ","+afterBalance +","+ deltaBalance +","+estimateGas+","+tx.cumulativeGasUsed + ","+tx.gasUsed);
+  }
 
+}
+
+function csvHeader(){
+  log(">>>CSV,Function name, Before balance , AfterBalance ,Delta Balance, EstimateGas, CumulativeGasUsed ,gasUsed");
 }
 
 
 function call(funcName, params, val){
 
-  callRaw(primary, fsmp, funcName, params, val);
+  callRaw(false, primary, fsmp, funcName, params, val);
+}
+
+function callAndLog(funcName, params, val){
+  callRaw(true, primary, fsmp, funcName, params, val);
 }
 
 

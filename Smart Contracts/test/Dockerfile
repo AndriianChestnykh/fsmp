@@ -19,8 +19,8 @@ COPY fsmp.sol fsmp.sol
 
 
 #Init
-RUN geth --datadir /test1 --port 30303 --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1901 --nat any --preload common.js  init ./CustomGensis.json
+RUN geth --datadir /fsmp --port 30303 --nodiscover --ipcapi "admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpcapi "db,eth,net,web3" --autodag --networkid 1901 --nat any --preload common.js  init ./CustomGensis.json
 
 #ENTRYPOINT
-CMD ["/bin/sh","-c", "geth --datadir /test1 js fsmp_test.js > /logs/result.txt"]
-#ENTRYPOINT ["geth", "--datadir", "/test1" , "console"]
+CMD ["/bin/sh","-c", "geth --datadir /fsmp js fsmp_test.js > /logs/result.txt"]
+#ENTRYPOINT ["geth", "--datadir", "/fsmp" , "console"]
