@@ -15,7 +15,7 @@ docker-compose up
 
 ```
 
-When test finished poccessing in folder logs/ you will have file result.txt
+When test finished processing in folder logs/ you will have file result.txt
 
 ## Extract csv from log
 
