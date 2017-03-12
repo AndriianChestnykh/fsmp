@@ -13,7 +13,10 @@
     <th>Withdrawed at date</th>
     <!-- <th>Wei allowed to withdraw</th> -->
   </tr>
-  <tr ng-repeat="sc in SCCtrl.scData">
+  <tr ng-repeat="sc in SCCtrl.scData"
+      ng-if="SCCtrl.owner === 'public' ||
+             sc.DOAddress == SCCtrl.currentAccount ||
+             sc.DSOAddress === SCCtrl.currentAccount">
     <td>{{sc.id}}</td>
     <td>{{sc.DOAddress}}</td>
     <td>{{sc.DSOAddress}}</td>

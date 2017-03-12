@@ -7,8 +7,8 @@ angular.module('public')
   controller: ContractPageController
 });
 
-ContractPageController.$inject = ['appConfig', 'Web3Service', 'AccountsService', '$scope'];
-function ContractPageController(appConfig, Web3Service, AccountsService, $scope) {
+ContractPageController.$inject = ['appConfig', 'Web3Service', 'AccountsService', '$scope', '$q'];
+function ContractPageController(appConfig, Web3Service, AccountsService, $scope, $q) {
 
     var ctrl = this,
         web3, currentAccount, contractAddress, contract;
@@ -19,8 +19,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
 
     ctrl.sellOrders = []; //all sell orders in the chain
 
-    ctrl.allStorageContracts = [];
-    ctrl.myStorageContracts = [];
+    ctrl.storageContracts = [];
 
     ctrl.createBuyOrderDisabled = false;
 
@@ -31,7 +30,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
     ctrl.createStorageContract = createStorageContract;
     ctrl.getBuyOrders = getBuyOrders;
     ctrl.getSellOrders = getSellOrders;
-    ctrl.getAllStorageContracts = getAllStorageContracts;
+    ctrl.getStorageContracts = getStorageContracts;
     ctrl.cancelOrder = cancelOrder;
     ctrl.manageStorageContract = manageStorageContract;
 
@@ -47,116 +46,184 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
       //prevent multiple requests
       ctrl.createBuyOrderDisabled = true;
 
-      var transactionId = contract //do we need transactionId?
-        .createBuyOrder
-        .sendTransaction(
-          cbo.volumeGB,
-          cbo.pricePerGB,
-          cbo.connectionInfo,
-          {from: currentAccount,
-            value: cbo.weiInitialAmount,
-            gas: 1000000},
-          (err, data) => {
-            if (err) {
-              console.log(err);
-            } else {
-              getBuyOrders();
-            }
-          }
-        );
+      contract.createBuyOrder.sendTransaction(
+        cbo.volumeGB,
+        cbo.pricePerGB,
+        cbo.connectionInfo,
 
+        {from: currentAccount,
+          value: cbo.weiInitialAmount,
+          gas: 1000000},
+      // callback
+        (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            getBuyOrders();
+          }
+        });
     }
 
-    // FIXME: createBuyOrder && createSellOrder need a higher-order function
     function createSellOrder(cso) {
-      var transactionId = contract
-          .createSellOrder
-          .sendTransaction(
+
+      ctrl.createSellOrderDisabled = true;
+
+      contract.createSellOrder.sendTransaction(
             cso.volumeGB,
             cso.pricePerGB,
             cso.connectionInfo,
             {from: currentAccount,
               value: 0,
-              gas: 1000000}
-          );
-        getSellOrders();
+              gas: 1000000},
+            //callback
+            (err, success) => {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log('Created');
+                getSellOrders();
+              }
+            });
+
     }
 
     function createStorageContract(orderIndex, orderId, orderType, connectionInfo) {
-      let transactionID = contract
-        .createStorageContract
-        .sendTransaction(
-          orderIndex,
-          orderId,
-          orderType,
-          connectionInfo,
-          { from: currentAccount,
-            value: 0,
-            gas: 1000000}
-        );
-        getBuyOrders();
-        getSellOrders();
-        getAllStorageContracts();
+      contract.createStorageContract.sendTransaction(
+        orderIndex,
+        orderId,
+        orderType,
+        connectionInfo,
+        { from: currentAccount,
+          value: 0,
+          gas: 1000000},
+
+        (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            deleteOrder(orderType, orderId);
+
+            //FIXME: gets SC next after last in the array. NOT IN END PRODUCTION
+            getStorageContract(ctrl.storageContracts.length);
+          }
+      });
+    }
+
+    function deleteOrder(type, id) {
+      console.log(type);
+      if (type == 1) {
+        deleteFromArray(ctrl.buyOrders, id);
+      } else {
+        deleteFromArray(ctrl.sellOrders, id);
+      }
+    }
+
+    function deleteFromArray(arr, id) {
+      for (let i = 0, n = arr.length; i < n; i++) {
+        if (arr[i].id === id) {
+          $scope.$apply(() => {
+            arr.splice(i, 1);
+          });
+          return;
+        }
+      }
     }
 
     function getBuyOrder(index, boLength) {
-      contract.getBuyOrder(index, (error, result) => {
 
-        if (error) {
-          console.log('Error occured on getting buy orders:', error);
-        } else {
+      let promise = $q((resolve, reject) => {
+        contract.getBuyOrder(index, (error, gboArr) => {
+          if (error) {
+            reject('No buy order because of ' + error);
+          } else {
+            resolve(gboArr);
+          }
+        });
+      });
 
-          let gboArr = result;
-          let gbo = {
-            id: +gboArr[0],
-            DO: gboArr[1],
-            volumeGB: parseFloat(gboArr[2]),
-            pricePerGB: parseFloat(gboArr[3]),
-            weiInitialAmount: parseFloat(gboArr[4]),
-            connectionInfo: gboArr[5],
-            index: index
-          };
+      promise.then((gboArr) => {
 
-          // $scope.$apply is needed so the tables refresh
-          $scope.$apply(() => {
-            ctrl.buyOrders.push(gbo);
+        let gbo = {
+          id: +gboArr[0],
+          DO: gboArr[1],
+          volumeGB: parseFloat(gboArr[2]),
+          pricePerGB: parseFloat(gboArr[3]),
+          weiInitialAmount: parseFloat(gboArr[4]),
+          connectionInfo: gboArr[5],
+          index: index
+        };
 
-            if (index === boLength - 1) ctrl.createBuyOrderDisabled = false;
-          });
+        ctrl.buyOrders.push(gbo);
+        if (index === boLength - 1) ctrl.createBuyOrderDisabled = false;
 
-        }
+      }, (error) => {
+        console.log(error);
+      });
+    }
+
+    function getSellOrder(index, soLength) {
+      let promise = $q((resolve, reject) => {
+        contract.getSellOrder(index, (err, soArr) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(soArr);
+          }
+        });
+      });
+
+      promise.then((soArr) => {
+        let so = {
+          id: +soArr[0],
+          DO: soArr[1],
+          volumeGB: parseFloat(soArr[2]),
+          pricePerGB: parseFloat(soArr[3]),
+          connectionInfo: soArr[4],
+          index: index
+        };
+
+        ctrl.sellOrders.push(so);
+        if (index === soLength - 1) ctrl.createSellOrderDisabled = false;
+
+      }, (err) => {
+        console.log(err);
       });
 
     }
 
-    function getSellOrder(index) {
-      var soArr = contract.getSellOrder(index);
-      return {
-        id: +soArr[0],
-        DO: soArr[1],
-        volumeGB: parseFloat(soArr[2]),
-        pricePerGB: parseFloat(soArr[3]),
-        connectionInfo: soArr[4],
-        index: index
-      };
-    }
-
     function getStorageContract(index) {
-      var scArr = contract.getStorageContract(index);
-      return {
-        id: +scArr[0],
-        DOAddress: scArr[1],
-        DSOAddress: scArr[2],
-        DOConnectionInfo: scArr[3],
-        DSOConnectionInfo: scArr[4],
-        volumeGB: parseFloat(scArr[5]),
-        startDate: parseDate(scArr[6]),
-        stopDate: parseDate(scArr[7]),
-        pricePerGB: parseFloat(scArr[8]),
-        weiLeftToWithdraw: parseFloat(scArr[9]),
-        withdrawedAtDate: parseFloat(scArr[10]),
-        index: index
-      };
+      let promise = $q((resolve, reject) => {
+        contract.getStorageContract(index, (err, scArr) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(scArr);
+          }
+        });
+      });
+
+      promise.then((scArr) => {
+        let sc = {
+          id: +scArr[0],
+          DOAddress: scArr[1],
+          DSOAddress: scArr[2],
+          DOConnectionInfo: scArr[3],
+          DSOConnectionInfo: scArr[4],
+          volumeGB: parseFloat(scArr[5]),
+          startDate: parseDate(scArr[6]),
+          stopDate: parseDate(scArr[7]),
+          pricePerGB: parseFloat(scArr[8]),
+          weiLeftToWithdraw: parseFloat(scArr[9]),
+          withdrawedAtDate: parseFloat(scArr[10]),
+          index: index
+        };
+        ctrl.storageContracts.push(sc);
+
+      }, (err) => {
+        console.log(err);
+      });
+
+
     }
 
     function parseDate(timestamp) {
@@ -166,7 +233,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
     function getBuyOrders() {
       ctrl.buyOrders = [];
 
-      var boLength = parseFloat(contract.buyOrdersLength());
+      var boLength = +contract.buyOrdersLength();
 
       for (var i = 0, n = boLength; i < n; i++) {
         getBuyOrder(i, boLength);
@@ -175,35 +242,23 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
 
     function getSellOrders() {
       ctrl.sellOrders = [];
-      var soLength = contract.sellOrdersLength();
+      var soLength = +contract.sellOrdersLength();
 
       for (var i = 0, n = soLength; i < n; i++) {
-        ctrl.sellOrders.push(getSellOrder(i));
+        getSellOrder(i, soLength);
       }
     }
 
-    function getAllStorageContracts() {
-      ctrl.allStorageContracts = [];
-      var scLength = contract.storageContractsLength();
+    function getStorageContracts() {
+      ctrl.storageContracts = [];
+      var scLength = +contract.storageContractsLength();
 
       for (var i = 0, n = scLength; i < n; i++) {
-        ctrl.allStorageContracts.push(getStorageContract(i));
+        getStorageContract(i, scLength);
       }
-
-      getMyStorageContracts();
-    }
-
-    function getMyStorageContracts() {
-      ctrl.myStorageContracts = [];
-      ctrl.allStorageContracts.forEach(function(sc) {
-        if (sc.DOAddress === currentAccount || sc.DSOAddress === currentAccount) {
-          ctrl.myStorageContracts.push(sc);
-        }
-      })
     }
 
     function cancelOrder(type, index, id) {
-      //check owner?????????????????????????
       if (type == 'buy') {
         contract.cancelBuyOrder(index, id);
       } else if (type == 'sell') {
@@ -239,7 +294,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
          gas: 1000000}
       );
 
-      getAllStorageContracts();
+      getStorageContracts();
     }
 
     function onInit() {
@@ -259,7 +314,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope)
 
       getBuyOrders();
       getSellOrders();
-      getAllStorageContracts();
+      getStorageContracts();
     };
 
   }//end controller function

@@ -24,7 +24,10 @@
 <label>weiInitialAmount:
     <input type="number" ng-model="cbo.weiInitialAmount"/>
 </label>
-<button ng-click="$ctrl.createBuyOrder(cbo)" ng-disabled="$ctrl.createBuyOrderDisabled">createBuyOrder</button>
+<button ng-click="$ctrl.createBuyOrder(cbo)"
+        ng-disabled="$ctrl.createBuyOrderDisabled">
+  createBuyOrder
+</button>
 <hr>
 
 <h3>All Buy Orders</h3>
@@ -54,7 +57,6 @@
 
 <h1>Sell Orders</h1>
 <hr>
-<!-- TODO: make directive create [buy | sell] order -->
 <h3>Create Sell Order</h3>
 <label>volumeGB:
     <input type="number" ng-model="cso.volumeGB"/>
@@ -65,7 +67,10 @@
 <label>connectionInfo:
     <input type="text" ng-model="cso.connectionInfo"/>
 </label>
-<button ng-click="$ctrl.createSellOrder(cso);">createSellOrder</button>
+<button ng-click="$ctrl.createSellOrder(cso);"
+        ng-disabled="$ctrl.createSellOrderDisabled">
+  createSellOrder
+</button>
 <hr>
 
 
@@ -102,18 +107,20 @@
 <h3>All Storage Contracts</h3>
 
 <storage-contracts
-  sc-data="$ctrl.allStorageContracts"
+  sc-data="$ctrl.storageContracts"
+  owner="public"
   on-contract-manage="$ctrl.manageStorageContract(storageContractIndex, storageContractID, method, wei)">
 </storage-contracts>
 
 <label>
-  <button type="button" ng-click="$ctrl.getAllStorageContracts()">getStorageContracts</button>
+  <button type="button" ng-click="$ctrl.getStorageContracts()">getStorageContracts</button>
 </label>
 <hr>
 
 <h3>My Storage Contracts</h3>
 <storage-contracts
-  sc-data="$ctrl.myStorageContracts"
+  sc-data="$ctrl.storageContracts"
+  owner="me"
   on-contract-manage="$ctrl.manageStorageContract(storageContractIndex, storageContractID, method, wei)">
 </storage-contracts>
 <hr>
