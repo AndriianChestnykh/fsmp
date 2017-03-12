@@ -8,6 +8,7 @@ angular.module('public')
   controllerAs: 'SCCtrl',
   bindings: {
     scData: '<',
+    owner: "@",
     onContractManage: '&'
   }
 });

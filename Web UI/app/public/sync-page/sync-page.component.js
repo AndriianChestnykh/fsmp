@@ -10,7 +10,7 @@ angular.module('public')
 syncPageController.$inject = ['$scope', '$http'];
 
 function syncPageController($scope, $http) {
-	var baseUrl = 'http://localhost:8384' 
+	var baseUrl = 'http://localhost:8384'
 	$scope.apiKey = 'r4ZaVkfv56PaAQgiYsHVkYkFZsGsXN6G'
 
 	$scope.getConfig = function () {
@@ -18,7 +18,7 @@ function syncPageController($scope, $http) {
 			var json = JSON.stringify(cfg.devices, null, 2)
          	$('#config-result').text(json)
          	console.log(json)
-		})	
+		})
    	}
 
    	$scope.removeDevice = function(){
@@ -29,25 +29,25 @@ function syncPageController($scope, $http) {
         getCfg($http, function callback(cfg){
         	var len = cfg.devices.length
         	cfg.devices = cfg.devices.filter(d => {
-        		d.deviceID != deviceId			
+        		d.deviceID != deviceId
         	})
         	if(len != cfg.devices.length){
-        		$('#message_r').html("no device with id: " + deviceId)			
+        		$('#message_r').html("no device with id: " + deviceId)
         	} else {
         		updateCfg($http, cfg, status => {
         			if(status == 200){
-        				$('#message_r').html("success")	
+        				$('#message_r').html("success")
         			}
-	          	})	
+	          	})
         	}
-        })	
+        })
 	}
 
 	$scope.addDevice = function () {
         checkDeviceId($http, $scope.deviceId, response => {
         	console.log(response)
         	if(response.data.error){
-        		$('#message').html(response.data.error)	
+        		$('#message').html(response.data.error)
         	} else if (response.data.id){
         		getCfg($http, function callback(cfg){
         			cfg.devices.push({
@@ -59,16 +59,16 @@ function syncPageController($scope, $http) {
 						"introducer":false,
 						"skipIntroductionRemovals":false,
 						"introducedBy":"",
-						"paused":false		
+						"paused":false
         			})
         			updateCfg($http, cfg, status => {
         				if(status == 200){
-        					$('#message').html("success")	
+        					$('#message').html("success")
         				}
-	          		})	
+	          		})
         		})
         	}
-        })	
+        })
     }
 
     $scope.changeDeviceState = function(){
@@ -87,18 +87,18 @@ function syncPageController($scope, $http) {
         		}
         	}
         	if(result == undefined){
-        		$('#update').html('no device with id: ' + deviceId)	
+        		$('#update').html('no device with id: ' + deviceId)
         	} else {
         		updateCfg($http, cfg, status => {
-	       			$http({ 
+	       			$http({
         				method: 'GET',
         				url : baseUrl + '/rest/system/config/insync',
         				headers : {'X-API-Key': $scope.apiKey}
         			}).then(success => {
-	       				$('#update').html('paused: ' + result)	
+	       				$('#update').html('paused: ' + result)
 	       			}, error => {
 	       				console.log(error)
-	       			})	
+	       			})
         		})
         	}
         })
@@ -119,7 +119,7 @@ function syncPageController($scope, $http) {
 	  	}, function errorCallback(response) {
 	  		console.log(response)
 		})
-    }    
+    }
 
    	function getCfg($http, callback){
         var req = {
@@ -133,7 +133,7 @@ function syncPageController($scope, $http) {
 			callback(response.data)
 	  	}, function errorCallback(response) {
 	  		console.log(response)
-	    })		
+	    })
     }
 
     function checkDeviceId($http, deviceId, callback){
@@ -148,8 +148,8 @@ function syncPageController($scope, $http) {
 			callback(response)
 	  	}, function errorCallback(response) {
 	  		console.log(response.status)
-		})	
-    }		  
+		})
+    }
 }
 
 }());
