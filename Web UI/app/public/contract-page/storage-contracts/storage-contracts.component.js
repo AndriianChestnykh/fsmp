@@ -25,11 +25,10 @@ function StorageContractsController(AccountsService) {
                                   wei) => {
     SCCtrl.onContractManage({
       storageContractIndex: storageContractIndex,
-      storageContractID: storageContractIndex,
+      storageContractID: storageContractID,
       method: method,
       wei: wei
     });
-
   };
 }
 
