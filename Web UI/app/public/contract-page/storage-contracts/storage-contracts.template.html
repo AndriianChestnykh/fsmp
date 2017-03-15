@@ -1,4 +1,4 @@
-<table>
+<table class="table table-bordered table-striped table-hover">
   <tr>
     <th>ID</th>
     <th>DO address</th>
@@ -18,8 +18,8 @@
              sc.DOAddress == SCCtrl.currentAccount ||
              sc.DSOAddress === SCCtrl.currentAccount">
     <td>{{sc.id}}</td>
-    <td>{{sc.DOAddress}}</td>
-    <td>{{sc.DSOAddress}}</td>
+    <td>{{sc.DOAddressShort}}</td>
+    <td>{{sc.DSOAddressShort}}</td>
     <td>{{sc.DOConnectionInfo}}</td>
     <td>{{sc.DSOConnectionInfo}}</td>
     <td>{{sc.volumeGB}}</td>
@@ -33,28 +33,32 @@
     <td>
       <button
       ng-if="sc.DOAddress === SCCtrl.currentAccount"
-      ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'startStorageContract')">
-        startStorageContract
+      ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'startStorageContract')"
+      class="btn btn-success">
+        Start Storage Contract
       </button>
     </td>
     <td>
-      <button ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'stopStorageContract')">
-        stopStorageContract
+      <button ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'stopStorageContract')"
+              class="btn btn-success">
+        Stop Storage Contract
       </button>
     </td>
     <td>
       <button
       ng-if="sc.DSOAddress === SCCtrl.currentAccount"
-      ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'withdrawFromStorageContract')">
-        withdrawFromStorageContract
+      ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'withdrawFromStorageContract')"
+      class="btn btn-success">
+        Withdraw From Storage Contract
       </button>
     </td>
     <td ng-if="sc.DOAddress === SCCtrl.currentAccount">
       <button
-      ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'refillStorageContract', SCCtrl[wei + sc.id])">
-        refillStorageContract
+      ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'refillStorageContract', SCCtrl[wei + sc.id])"
+      class="btn btn-success">
+        Refill Storage Contract
       </button>
-      <input type="text" ng-model="SCCtrl[wei + sc.id]" />
+      <input type="text" ng-model="SCCtrl[wei + sc.id]" class="form-control" />
     </td>
   </tr>
 </table>

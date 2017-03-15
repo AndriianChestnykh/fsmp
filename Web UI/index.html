@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
-
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/main.css">
     <title>File Storage Marketplace</title>
 
@@ -13,17 +13,19 @@
 </head>
 
 <body ng-app="fsmpApp">
-
-<header class="header">
-    <nav class="nav">
-        <ul class="nav__list">
+<div class="container">
+  <div class="row">
+    <header class="header">
+        <nav class="nav">
+          <ul class="nav__list">
             <li><a href="#/main" class="nav__link">Main</a></li>
             <li><a href="#/accounts" class="nav__link">Accounts</a></li>
             <li><a href="#/contract" class="nav__link">Contract</a></li>
             <li><a href="#/sync" class="nav__link">Syncthing</a></li>
-        </ul>
-    </nav>
-</header>
+          </ul>
+        </nav>
+      </header>
+  </div>
 
 <div ng-view></div>
 
@@ -57,6 +59,6 @@
 <script src="app/public/contract-page/orders-table/orders-table.component.js"></script>
 <script src="app/public/contract-page/storage-contracts/storage-contracts.component.js"></script>
 
-
+</div>
 </body>
 </html>

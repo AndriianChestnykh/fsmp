@@ -1,12 +1,11 @@
-<table>
+<table class="table table-bordered table-striped table-hover">
   <tr>
     <th>ID</th>
     <th>DO</th>
-    <th>volumeGB</th>
-    <th>pricePerGB</th>
-    <th>connectionInfo</th>
-
-    <th ng-if="ordersTableCtrl.type === 'buy'">weiInitialAmount</th>
+    <th>Volume GB</th>
+    <th>Price Per GB</th>
+    <th>Connection Info</th>
+    <th ng-if="ordersTableCtrl.type === 'buy'">Wei Initial Amount</th>
   </tr>
 
   <tr
@@ -14,7 +13,7 @@
     ng-if="ordersTableCtrl.owner === 'public' ||
            o.DO === ordersTableCtrl.currentAccount">
     <td>{{o.id}}</td>
-    <td>{{o.DO}}</td>
+    <td>{{o.DOShort}}</td>
     <td>{{o.volumeGB}}</td>
     <td>{{o.pricePerGB}}</td>
     <td>{{o.connectionInfo}}</td>
@@ -26,19 +25,20 @@
 
     <!-- Create SC from Public -->
     <td ng-if="ordersTableCtrl.owner === 'public'">
-      <button
-        ng-click="ordersTableCtrl.createStorageContract(o.index, o.id, ordersTableCtrl.type, connectionInfo)"
-        ng-disabled="!connectionInfo">
-        createStorageContract
+      <div class="form-group">
+        <label>
+          My connection Info
+          <input type="text" ng-model="connectionInfo" class="form-control">
+        </label>
+        <button ng-click="ordersTableCtrl.createStorageContract(o.index, o.id, ordersTableCtrl.type, connectionInfo)"
+                ng-disabled="!connectionInfo" class="btn btn-sm btn-success">
+                Create Storage Contract
       </button>
-      <label>
-        My connectionInfo
-        <input type="text" ng-model="connectionInfo">
-      </label>
+      </div>
     </td>
 
     <td ng-if="ordersTableCtrl.owner === 'me'">
-      <button ng-click="ordersTableCtrl.cancelOrder(ordersTableCtrl.type, o.index, o.id)">
+      <button ng-click="ordersTableCtrl.cancelOrder(ordersTableCtrl.type, o.index, o.id)" class="btn btn-success">
         Cancel
       </button>
     </td>
