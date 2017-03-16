@@ -96,7 +96,7 @@ log(fsmp.getStorageContract(0));
 callAndLog('startStorageContract', [0,1]);
 callAndLog('stopStorageContract', [0,1]);
 
-callAndLog('refillStorageContract',[0,1,1]);
+callAndLog('refillStorageContract',[0,1],1);
 
 
 log("createStorageContract type = 2");
