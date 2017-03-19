@@ -31,7 +31,7 @@ function syncPageController($scope, $http) {
         	cfg.devices = cfg.devices.filter(d => {
         		d.deviceID != deviceId
         	})
-        	if(len != cfg.devices.length){
+        	if(len == cfg.devices.length){
         		$('#message_r').html("no device with id: " + deviceId)
         	} else {
         		updateCfg($http, cfg, status => {
