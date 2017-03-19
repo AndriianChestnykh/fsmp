@@ -7,8 +7,15 @@ angular.module('public')
   controller: ContractPageController
 });
 
-ContractPageController.$inject = ['appConfig', 'Web3Service', 'AccountsService', '$scope', '$q'];
-function ContractPageController(appConfig, Web3Service, AccountsService, $scope, $q) {
+ContractPageController.$inject = [
+  'appConfig',
+  'Web3Service',
+  'AccountsService',
+  '$scope',
+  '$q',
+  'SyncService'
+];
+function ContractPageController(appConfig, Web3Service, AccountsService, $scope, $q, SyncService) {
 
     var ctrl = this,
         web3, currentAccount, contractAddress, contract;
@@ -89,7 +96,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
         connectionInfo,
         { from: currentAccount,
           value: 0,
-          gas: 1000000},
+          gas: 1000000 },
 
         (err) => {
           if (err) {
@@ -299,7 +306,24 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
          gas: 1000000}
       );
 
+      // delete device if stop cintract
+      if (method == 'stopStorageContract') {
+        let contract = getContract(storageContractID);
+        let myDeviceId = SyncService.getMyDeviceId();
+        let partnerDeviceId = (contract.DOConnectionInfo == myDeviceId) ?
+                               contract.DSOConnectionInfo : contract.DOConnectionInfo;
+        console.log(partnerDeviceId);
+        SyncService.removeDevice(partnerDeviceId);
+      }
+
       getStorageContracts();
+    }
+
+    function getContract(id) {
+      let contracts = ctrl.storageContracts;
+      for (let i = 0, n = contracts.length; i < n; i++) {
+        if (contracts[i].id = id) return contracts[i];
+      }
     }
 
     function onInit() {
@@ -311,11 +335,11 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
 
       if (!contractAddress) {
         alert('You didn\'t provide contract address. Provide correct contract address!');
-        //redirect to main
+        //TODO: redirect to main
         return;
       }
 
-      contract = web3.eth.contract(appConfig.abi).at(contractAddress);
+      contract = Web3Service.getContract();
 
       getBuyOrders();
       getSellOrders();

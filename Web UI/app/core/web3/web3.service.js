@@ -18,6 +18,11 @@ function Web3Service(appConfig) {
       alert('Node not found. Provide correct RPC server.')
   }
 
+  let contractAddress = appConfig.getContractAddress();
+  let contract = web3.eth.contract(appConfig.abi).at(contractAddress);
+
+  Web3Service.getContract = () => contract;
+
   Web3Service.getWeb3 = () => web3;
 
 }

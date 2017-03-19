@@ -7,6 +7,12 @@
 </div>
 
 <div class="modal-body text-center" id="modal-body">
+
+  <p>
+    <span class="label label-success">My Device ID: </span>
+    <span class="text-success">{{syncModalCtrl.myDeviceId}}</span>
+  </p>
+
   <div class="form-group">
     <p>{{syncModalCtrl.configResult}}</p>
     <button class="btn btn-primary" ng-click="syncModalCtrl.getConfig()">Config</button>
@@ -38,6 +44,11 @@
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-lg btn-success" type="button" ng-click="syncModalCtrl.ok()">OK</button>
+  <button class="btn btn-lg btn-success" type="button"
+          ng-click="syncModalCtrl.ok()"
+          ng-disabled="!syncModalCtrl.creationAllowed">
+          <!-- TODO: add tooltip -->
+    Create Contract
+  </button>
   <button class="btn btn-lg btn-danger" type="button" ng-click="syncModalCtrl.cancel()">Cancel</button>
 </div>

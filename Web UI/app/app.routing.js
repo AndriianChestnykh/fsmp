@@ -12,10 +12,11 @@ config(['$locationProvider', '$routeProvider',
     }).
     when('/accounts', {
         template: '<accounts-page></accounts-page>'
-    }).
-    when('/sync/:deviceId', {
-        template: '<sync-page></sync-page>'
     })
+    // .
+    // when('/sync', {
+    //     template: '<sync-page></sync-page>'
+    // })
     .otherwise('/main');
   }
 ]);

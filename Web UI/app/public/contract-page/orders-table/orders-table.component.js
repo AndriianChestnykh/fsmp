@@ -19,25 +19,37 @@ OrdersTableController.$inject = ['AccountsService', '$uibModal']
 function OrdersTableController(AccountsService, $uibModal) {
   let ordersTableCtrl = this;
 
-  ordersTableCtrl.currentAccount = AccountsService.getCurrentAccount();
-
-  ordersTableCtrl.openSyncModal = (deviceId, deviceName) => {
+  ordersTableCtrl.openSyncModal = (deviceId, deviceName, index, id, type) => {
     let modalInstance = $uibModal.open({
       component: 'syncModal',
       resolve: {
-        deviceId: () => {
-          return deviceId;
-        },
-        deviceName: () => {
-          return deviceName;
-        }
+        deviceId: () => deviceId,
+        deviceName: () => deviceName,
+        index: () => index,
+        id: () => id,
+        type: () => type
       }
     });
 
-    modalInstance.result.then((selectedItem) => {
-      console.log('Selected item', selectedItem);
+    modalInstance.result.then((args) => {
+      let orderType;
+
+      if (args.type == 'buy') {
+        orderType = 1;
+      } else if (args.type == 'sell') {
+        orderType = 2;
+      } else {
+        throw new Error('Can\'t create contract from order of type -> ' + args.type);
+      }
+
+      ordersTableCtrl.onCreate({
+        orderIndex: args.index,
+        orderId: args.id,
+        orderType: orderType,
+        connectionInfo: args.myDeviceId
+      });
     }, () => {
-      console.log('modal-component dismissed');
+      console.log('Sync-modal dismissed');
     });
   };
 

@@ -8,11 +8,11 @@ SyncService.$inject = ['$http'];
 function SyncService($http) {
   let service = this;
   let baseUrl = 'http://localhost:8384';
-  let apiKey = 'r4ZaVkfv56PaAQgiYsHVkYkFZsGsXN6G';
+  let apiKey = 'LhrjDydde9XMQyHGZ6qnakyMhFvUmbfX';
+  let myDeviceId = '';
 
-  service.getApiKey = () => {
-    return apiKey;
-  };
+  service.getApiKey = () => apiKey;
+  service.getMyDeviceId = () => myDeviceId;
 
   service.getCfg = (callback) => {
     var req = {
@@ -29,6 +29,11 @@ function SyncService($http) {
       console.log(error);
     });
   };
+
+  // get my device id
+  service.getCfg((cfg) => {
+    myDeviceId = cfg.devices[0].deviceID;
+  });
 
   service.checkDeviceId = (deviceId, callback) => {
     let req = {
@@ -55,12 +60,31 @@ function SyncService($http) {
       data: cfg
     };
     $http(req).then((response) => {
-      console.log(response)
       callback(response.status)
     }, (error) => {
       console.log(error)
     })
   };
+
+  service.removeDevice = (deviceId) => {
+    service.getCfg((cfg) => {
+    	var len = cfg.devices.length;
+
+    	cfg.devices = cfg.devices.filter(d => {
+    		d.deviceID != deviceId;
+    	});
+
+    	if(len == cfg.devices.length){
+    		console.log("No device with id: " + deviceId);
+    	} else {
+    		service.updateCfg(cfg, (status) => {
+    			if(status == 200){
+    				console.log('Device deleted');
+    			}
+        })
+    	}
+    })
+	}
 }
 
 }());

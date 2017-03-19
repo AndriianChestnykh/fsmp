@@ -10,7 +10,7 @@ angular.module('public')
 syncPageController.$inject = ['$scope', '$http'];
 function syncPageController($scope, $http) {
 	var baseUrl = 'http://localhost:8384'
-	$scope.apiKey = 'r4ZaVkfv56PaAQgiYsHVkYkFZsGsXN6G'
+	$scope.apiKey = 'LhrjDydde9XMQyHGZ6qnakyMhFvUmbfX'
 
 	$scope.getConfig = () => {
 	  getCfg($http, (cfg) => {
@@ -120,35 +120,36 @@ function syncPageController($scope, $http) {
 		})
     }
 
-   // 	function getCfg($http, callback){
-    //     var req = {
-    // 			method: 'GET',
-    // 			url : baseUrl + '/rest/system/config',
-    // 			headers : {
-    // 			  'X-API-Key': $scope.apiKey
-    // 		  }
-		//     };
-    //     $http(req).then(function successCallback(response){
-		// 	callback(response.data)
-	  // 	}, function errorCallback(response) {
-	  // 		console.log(response)
-	  //   })
-    // }
+   	function getCfg($http, callback){
+        var req = {
+    			method: 'GET',
+    			url : baseUrl + '/rest/system/config',
+    			headers : {
+    			  'X-API-Key': $scope.apiKey
+    		  }
+		    };
+        console.log(req);
+        $http(req).then(function successCallback(response){
+			callback(response.data)
+	  	}, function errorCallback(response) {
+	  		console.log(response)
+	    })
+    }
 
-    // function checkDeviceId($http, deviceId, callback){
-    //   var req = {
-  	// 		method: 'GET',
-  	// 		url : baseUrl + '/rest/svc/deviceid?id=' + deviceId,
-  	// 		headers : {
-  	// 			'X-API-Key': $scope.apiKey
-  	// 		}
-  	// 	};
-  	// 	$http(req).then(function successCallback(response){
-  	// 		callback(response);
-  	//   }, function errorCallback(response) {
-  	//   	console.log(response.status);
-  	// 	});
-    // }
+    function checkDeviceId($http, deviceId, callback){
+      var req = {
+  			method: 'GET',
+  			url : baseUrl + '/rest/svc/deviceid?id=' + deviceId,
+  			headers : {
+  				'X-API-Key': $scope.apiKey
+  			}
+  		};
+  		$http(req).then(function successCallback(response){
+  			callback(response);
+  	  }, function errorCallback(response) {
+  	  	console.log(response.status);
+  		});
+    }
 }
 
 }());

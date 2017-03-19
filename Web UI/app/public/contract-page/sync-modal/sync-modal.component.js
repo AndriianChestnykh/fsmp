@@ -17,14 +17,36 @@ SyncModalController.$inject = ['SyncService'];
 function SyncModalController(SyncService) {
   let syncModalCtrl = this;
 
+  //get my device id
+  // SyncService.getCfg((cfg) => {
+  //   syncModalCtrl.myDeviceId = cfg.devices[0].deviceID;
+  // });
+
+  let index, id, type;
+
   syncModalCtrl.$onInit = () => {
+    syncModalCtrl.myDeviceId = SyncService.getMyDeviceId();
+
     syncModalCtrl.deviceId = syncModalCtrl.resolve.deviceId;
     syncModalCtrl.deviceName = syncModalCtrl.resolve.deviceName;
+    index = syncModalCtrl.resolve.index;
+    id = syncModalCtrl.resolve.id;
+    type = syncModalCtrl.resolve.type;
     syncModalCtrl.apiKey = SyncService.getApiKey();
+
+    syncModalCtrl.creationAllowed = false;
   };
 
+  //send parameters to create storage contract in orders-table
   syncModalCtrl.ok = () => {
-    syncModalCtrl.close({$value: syncModalCtrl.deviceId});
+    let storageContractArgs = {
+      partnerDeviceId: syncModalCtrl.deviceId,
+      myDeviceId: syncModalCtrl.myDeviceId,
+      index,
+      id,
+      type
+    };
+    syncModalCtrl.close({$value: storageContractArgs});
   };
 
   syncModalCtrl.cancel = () => {
@@ -41,12 +63,12 @@ function SyncModalController(SyncService) {
 
   syncModalCtrl.addDevice = () => {
     SyncService.checkDeviceId(syncModalCtrl.deviceId, (response) => {
-    	console.log(response)
 
     	if(response.data.error){
         syncModalCtrl.message = response.data.error;
     	} else if (response.data.id){
-    		getCfg((cfg) => {
+
+    		SyncService.getCfg((cfg) => {
     			cfg.devices.push({
     				'deviceID': syncModalCtrl.deviceId,
     				'name': syncModalCtrl.deviceName,
@@ -62,6 +84,8 @@ function SyncModalController(SyncService) {
     			SyncService.updateCfg(cfg, (status) => {
       				if(status == 200){
       					syncModalCtrl.message = 'success';
+                // alow creation od SC
+                syncModalCtrl.creationAllowed = true;
       				}
         		})
     		});
