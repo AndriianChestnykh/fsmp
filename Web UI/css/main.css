@@ -13,7 +13,6 @@ td, th {
   margin: 0 auto;
   display: block;
   width: 500px;
-
 }
 
 .nav__list li {
@@ -30,3 +29,14 @@ td, th {
   margin-bottom: 30px;
 }
 
+current-info dl {
+  font-family: monospace;
+  font-size: .9em;
+  font-weight: bold;
+  text-align: center;
+  color: #4caf50;
+}
+
+current-info dd {
+  text-decoration: underline;
+}

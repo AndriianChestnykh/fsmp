@@ -30,7 +30,7 @@
     <td>{{sc.withdrawedAtDate}}</td>
     <!-- <td>{{sc.weiAllowedToWithdraw}}</td> -->
 
-    <td>
+    <td ng-if="SCCtrl.owner == 'me'">
       <button
       ng-if="sc.DOAddress === SCCtrl.currentAccount"
       ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'startStorageContract')"
@@ -38,13 +38,13 @@
         Start Storage Contract
       </button>
     </td>
-    <td>
+    <td ng-if="SCCtrl.owner == 'me'">
       <button ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'stopStorageContract')"
               class="btn btn-success">
         Stop Storage Contract
       </button>
     </td>
-    <td>
+    <td ng-if="SCCtrl.owner == 'me'">
       <button
       ng-if="sc.DSOAddress === SCCtrl.currentAccount"
       ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'withdrawFromStorageContract')"
@@ -52,7 +52,7 @@
         Withdraw From Storage Contract
       </button>
     </td>
-    <td ng-if="sc.DOAddress === SCCtrl.currentAccount">
+    <td ng-if="sc.DOAddress === SCCtrl.currentAccount && SCCtrl.owner == 'me'">
       <button
       ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'refillStorageContract', SCCtrl[wei + sc.id])"
       class="btn btn-success">

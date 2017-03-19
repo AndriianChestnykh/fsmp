@@ -1,1 +1,6 @@
-angular.module('fsmpApp', ['core', 'ngRoute', 'public']);
+angular.module('fsmpApp', [
+  'core',
+  'ngRoute',
+  'public',
+  'ui.bootstrap'
+]);

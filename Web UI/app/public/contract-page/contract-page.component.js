@@ -24,7 +24,6 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
     ctrl.createBuyOrderDisabled = false;
 
     ctrl.unlockAccount = unlockAccount;//?????????
-    ctrl.getCurrentAccount = getCurrentAccount;
     ctrl.createBuyOrder = createBuyOrder;
     ctrl.createSellOrder = createSellOrder;
     ctrl.createStorageContract = createStorageContract;
@@ -36,10 +35,6 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
 
     function unlockAccount(pwd) {
       web3.personal.unlockAccount(currentAccount, pwd, 10000);
-    }
-
-    function getCurrentAccount() {
-      return currentAccount;
     }
 
     function createBuyOrder(cbo) {
@@ -80,7 +75,6 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
               if (err) {
                 console.log(err);
               } else {
-                console.log('Created');
                 getSellOrders();
               }
             });
@@ -110,7 +104,6 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
     }
 
     function deleteOrder(type, id) {
-      console.log(type);
       if (type == 1) {
         deleteFromArray(ctrl.buyOrders, id);
       } else {
@@ -204,6 +197,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
         });
       });
 
+
       promise.then((scArr) => {
         let sc = {
           id: +scArr[0],
@@ -218,7 +212,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
           stopDate: parseDate(scArr[7]),
           pricePerGB: parseFloat(scArr[8]),
           weiLeftToWithdraw: parseFloat(scArr[9]),
-          withdrawedAtDate: parseFloat(scArr[10]),
+          withdrawedAtDate: parseDate(scArr[10]),
           index: index
         };
         ctrl.storageContracts.push(sc);
@@ -231,7 +225,14 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
     }
 
     function parseDate(timestamp) {
-      return (!+timestamp) ? '-' : new Date(+timestamp)
+      if (!+timestamp) return '-';
+      let date = new Date(+timestamp);
+      let month = date.getMonth() + 1;
+      if (month < 10) month = '0' + month;
+      let dateString = date.getDate() + '-' + month +
+                       '-' + date.getFullYear();
+
+      return dateString;
     }
 
     function getBuyOrders() {

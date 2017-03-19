@@ -1,8 +1,5 @@
 <div class="row center-account indent">
     <div class="row">
-        <h1>Current Account is: <mark>{{$ctrl.getCurrentAccount()}}</mark></h1>
-    </div>
-    <div class="row">
         <form class="form-inline">
             <div class="form-group">
                 <label for="accountPassword">Account password:
@@ -62,7 +59,7 @@
                   <input type="text" ng-model="cso.connectionInfo" class="form-control" placeholder="Connection Info" />
                 </label>
             </div>
-            <button ng-click="$ctrl.createSellOrder(cso);" class="btn btn-success">Create Sell Order</button>
+            <button ng-click="$ctrl.createSellOrder(cso);" ng-disabled="$ctrl.createSellOrderDisabled" class="btn btn-success">Create Sell Order</button>
         </form>
     </div>
 </div>

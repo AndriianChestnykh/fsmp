@@ -4,8 +4,8 @@
 angular.module('core')
 .service('AccountsService', AccountsService);
 
-AccountsService.$inject = ['Web3Service']
-function AccountsService(Web3Service) {
+AccountsService.$inject = ['Web3Service', '$rootScope']
+function AccountsService(Web3Service, $rootScope) {
   let AccountsService = this;
 
   let web3 = Web3Service.getWeb3();
@@ -13,6 +13,9 @@ function AccountsService(Web3Service) {
 
   AccountsService.getCurrentAccount = () => currentAccount;
   AccountsService.setCurrentAccount = (acc) => {
+    $rootScope.$broadcast('currentInfo:change', {
+      'currentAccount': acc
+    });
     return currentAccount = acc;
   };
 }

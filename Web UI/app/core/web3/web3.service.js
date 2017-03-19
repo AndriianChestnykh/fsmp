@@ -6,23 +6,19 @@ angular.module('core')
 
 Web3Service.$inject = ['appConfig'];
 function Web3Service(appConfig) {
+
   var Web3Service = this;
-  Web3Service.getWeb3 = getWeb3;
+  let web3 = new Web3();
 
+  let httpProvider = appConfig.getHttpProvider();
 
-  function getWeb3() {
-    let web3 = new Web3();
+  web3.setProvider(new web3.providers.HttpProvider(httpProvider));
 
-    let httpProvider = appConfig.getHttpProvider();
-
-    web3.setProvider(new web3.providers.HttpProvider(httpProvider));
-
-    if (!web3.isConnected()) {
-        alert('Node not found. Provide correct RPC server.')
-    }
-
-    return web3;
+  if (!web3.isConnected()) {
+      alert('Node not found. Provide correct RPC server.')
   }
+
+  Web3Service.getWeb3 = () => web3;
 
 }
 

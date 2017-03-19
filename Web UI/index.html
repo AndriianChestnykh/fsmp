@@ -24,16 +24,22 @@
             <li><a href="#/sync" class="nav__link">Syncthing</a></li>
           </ul>
         </nav>
-      </header>
-  </div>
 
-<div ng-view></div>
+        <current-info></current-info>
+      </header>
+    </div>
+
+    <div ng-view></div>
+  </div>
 
 <script src="lib/bignumber.min.js"></script>
 <script src="lib/web3.min.js"></script>
 
 <script src="lib/angular.min.js"></script>
 <script src="lib/angular-route.min.js"></script>
+<script src="lib/ui-bootstrap-tpls-2.5.0.min.js"></script>
+
+<script src="lib/angular-animate.min.js"></script>
 
 <script src="lib/jquery.min.js"></script>
 
@@ -45,9 +51,13 @@
 <script src="app/core/web3/web3.service.js"></script>
 <script src="app/core/config/config.service.js"></script>
 <script src="app/core/accounts/accounts.service.js"></script>
+<script src="app/core/sync/sync.service.js">
+
+</script>
 
 <!-- Public Modules -->
 <script src="app/public/public.module.js"></script>
+<script src="app/public/current-info/current-info.component.js"></script>
 
 <script src="app/public/main-page/main-page.component.js"></script>
 
@@ -58,7 +68,7 @@
 <script src="app/public//contract-page/contract-page.component.js"></script>
 <script src="app/public/contract-page/orders-table/orders-table.component.js"></script>
 <script src="app/public/contract-page/storage-contracts/storage-contracts.component.js"></script>
+<script src="app/public/contract-page/sync-modal/sync-modal.component.js"></script>
 
-</div>
 </body>
 </html>

@@ -1,0 +1,43 @@
+<div class="modal-header text-center">
+  <button type="button" class="close" data-dismiss="modal"
+          ng-click="syncModalCtrl.cancel()">
+    &times;
+  </button>
+  <h3 class="modal-title">Sync your devices</h3>
+</div>
+
+<div class="modal-body text-center" id="modal-body">
+  <div class="form-group">
+    <p>{{syncModalCtrl.configResult}}</p>
+    <button class="btn btn-primary" ng-click="syncModalCtrl.getConfig()">Config</button>
+  </div>
+
+
+  <div class="form-group">
+    <label>Api key
+      <input type="text" ng-model="syncModalCtrl.apiKey" class="form-control">
+    </label>
+  </div>
+
+
+  <div class="form-group">
+    <label>Device id
+      <input type="text" ng-model="syncModalCtrl.deviceId" class="form-control"/>
+    </label>
+  </div>
+
+
+  <div class="form-group">
+    <label>Device name
+      <input type="text" ng-model="syncModalCtrl.deviceName" class="form-control">
+    </label>
+  </div>
+
+  <span>{{syncModalCtrl.errorMessage}}</span>
+  <button class="btn btn-warning" ng-click="syncModalCtrl.addDevice()">Add device</button>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-lg btn-success" type="button" ng-click="syncModalCtrl.ok()">OK</button>
+  <button class="btn btn-lg btn-danger" type="button" ng-click="syncModalCtrl.cancel()">Cancel</button>
+</div>

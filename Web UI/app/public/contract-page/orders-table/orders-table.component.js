@@ -15,11 +15,31 @@ angular.module('public')
     }
   });
 
-OrdersTableController.$inject = ['AccountsService']
-function OrdersTableController(AccountsService) {
+OrdersTableController.$inject = ['AccountsService', '$uibModal']
+function OrdersTableController(AccountsService, $uibModal) {
   let ordersTableCtrl = this;
 
   ordersTableCtrl.currentAccount = AccountsService.getCurrentAccount();
+
+  ordersTableCtrl.openSyncModal = (deviceId, deviceName) => {
+    let modalInstance = $uibModal.open({
+      component: 'syncModal',
+      resolve: {
+        deviceId: () => {
+          return deviceId;
+        },
+        deviceName: () => {
+          return deviceName;
+        }
+      }
+    });
+
+    modalInstance.result.then((selectedItem) => {
+      console.log('Selected item', selectedItem);
+    }, () => {
+      console.log('modal-component dismissed');
+    });
+  };
 
   ordersTableCtrl.cancelOrder = function(type, index, id) {
     ordersTableCtrl.onCancel({
