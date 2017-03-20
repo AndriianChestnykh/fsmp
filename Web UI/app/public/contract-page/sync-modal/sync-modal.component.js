@@ -44,7 +44,8 @@ function SyncModalController(SyncService) {
       myDeviceId: syncModalCtrl.myDeviceId,
       index,
       id,
-      type
+      type,
+      weiInitialAmount: syncModalCtrl.weiInitialAmount
     };
     syncModalCtrl.close({$value: storageContractArgs});
   };

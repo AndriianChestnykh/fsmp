@@ -39,14 +39,25 @@
     </label>
   </div>
 
-  <span>{{syncModalCtrl.errorMessage}}</span>
-  <button class="btn btn-warning" ng-click="syncModalCtrl.addDevice()">Add device</button>
+  <div class="form-group">
+    <span>{{syncModalCtrl.errorMessage}}</span>
+    <button class="btn btn-warning" ng-click="syncModalCtrl.addDevice()">Add device</button>
+  </div>
+
+
+  <div class="form-group" ng-if="syncModalCtrl.resolve.type == 'sell'">
+    <label>weiInitialAmount
+      <input type="number" ng-model="syncModalCtrl.weiInitialAmount" class="form-control">
+    </label>
+  </div>
 </div>
 
 <div class="modal-footer">
   <button class="btn btn-lg btn-success" type="button"
           ng-click="syncModalCtrl.ok()"
-          ng-disabled="!syncModalCtrl.creationAllowed">
+          ng-disabled="!syncModalCtrl.creationAllowed ||
+                      (syncModalCtrl.resolve.type == 'sell' &&
+                      !syncModalCtrl.weiInitialAmount)">
           <!-- TODO: add tooltip -->
     Create Contract
   </button>

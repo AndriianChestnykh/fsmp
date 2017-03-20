@@ -11,7 +11,7 @@
     <th>Price per GB</th>
     <th>Wei left to withdraw</th>
     <th>Withdrawed at date</th>
-    <!-- <th>Wei allowed to withdraw</th> -->
+    <th>Wei allowed to withdraw</th>
   </tr>
   <tr ng-repeat="sc in SCCtrl.scData"
       ng-if="SCCtrl.owner === 'public' ||
@@ -28,7 +28,7 @@
     <td>{{sc.pricePerGB}}</td>
     <td>{{sc.weiLeftToWithdraw}}</td>
     <td>{{sc.withdrawedAtDate}}</td>
-    <!-- <td>{{sc.weiAllowedToWithdraw}}</td> -->
+    <td>{{sc.weiAllowedToWithdraw}}</td>
 
     <td ng-if="SCCtrl.owner == 'me'">
       <button
