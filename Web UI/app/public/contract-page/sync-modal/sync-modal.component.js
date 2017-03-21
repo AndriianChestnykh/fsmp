@@ -89,7 +89,7 @@ function SyncModalController(SyncService) {
           var i = cfg.folders.indexOf(defaultFolder)
 
           cfg.folders[i].devices.push({
-              'deviceID': syncModalCtrl.deviceId
+              'deviceID': syncModalCtrl.deviceId,
               'introducedBy':''
           })
 
