@@ -23,6 +23,10 @@
     <label>Api key
       <input type="text" ng-model="syncModalCtrl.apiKey" class="form-control">
     </label>
+    <button class="btn btn-warning"
+            ng-click="syncModalCtrl.setApiKey(syncModalCtrl.apiKey)">
+            Set New apiKey
+    </button>
   </div>
 
 
@@ -41,7 +45,11 @@
 
   <div class="form-group">
     <span>{{syncModalCtrl.errorMessage}}</span>
-    <button class="btn btn-warning" ng-click="syncModalCtrl.addDevice()">Add device</button>
+    <button class="btn btn-warning"
+            ng-click="syncModalCtrl.addDevice()"
+            ng-disabled="!syncModalCtrl.myDeviceId">
+      Add device
+    </button>
   </div>
 
 
