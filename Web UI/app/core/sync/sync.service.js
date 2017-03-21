@@ -74,6 +74,16 @@ function SyncService($http) {
     		d.deviceID != deviceId;
     	});
 
+      var defaultFolder = cfg.folders.filter(folder => {
+        folder.id == 'default'  
+      })[0]
+
+      var i = cfg.folders.indexOf(defaultFolder)
+
+      cfg.folders[i].devices = cfg.folders[i].devices.filter(d => {
+        d.deviceID != deviceId;  
+      }) 
+
     	if(len == cfg.devices.length){
     		console.log("No device with id: " + deviceId);
     	} else {

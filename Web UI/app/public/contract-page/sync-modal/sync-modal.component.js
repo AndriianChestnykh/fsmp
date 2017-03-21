@@ -81,6 +81,17 @@ function SyncModalController(SyncService) {
     				"paused":false
     			});
 
+          var defaultFolder = cfg.folders.filter(folder => {
+            folder.id == 'default'  
+          })[0]
+
+          var i = cfg.folders.indexOf(defaultFolder)
+
+          cfg.folders[i].devices.push({
+              'deviceID': syncModalCtrl.deviceId
+              'introducedBy':''
+          })
+
     			SyncService.updateCfg(cfg, (status) => {
       				if(status == 200){
       					syncModalCtrl.message = 'success';
