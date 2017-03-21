@@ -13,28 +13,31 @@ angular.module('public')
   controllerAs: 'syncModalCtrl'
 });
 
-SyncModalController.$inject = ['SyncService'];
-function SyncModalController(SyncService) {
+SyncModalController.$inject = ['SyncService', '$scope'];
+function SyncModalController(SyncService, $scope) {
   let syncModalCtrl = this;
-
-  //get my device id
-  // SyncService.getCfg((cfg) => {
-  //   syncModalCtrl.myDeviceId = cfg.devices[0].deviceID;
-  // });
 
   let index, id, type;
 
   syncModalCtrl.$onInit = () => {
     syncModalCtrl.myDeviceId = SyncService.getMyDeviceId();
-
     syncModalCtrl.deviceId = syncModalCtrl.resolve.deviceId;
     syncModalCtrl.deviceName = syncModalCtrl.resolve.deviceName;
     index = syncModalCtrl.resolve.index;
     id = syncModalCtrl.resolve.id;
     type = syncModalCtrl.resolve.type;
     syncModalCtrl.apiKey = SyncService.getApiKey();
-
     syncModalCtrl.creationAllowed = false;
+  };
+
+  syncModalCtrl.setApiKey = (newApiKey) => {
+    SyncService.setApiKey(newApiKey);
+
+    //get my device id
+    SyncService.getCfg((cfg) => {
+      syncModalCtrl.myDeviceId = cfg.devices[0].deviceID;
+      SyncService.setMyDeviceId(syncModalCtrl.myDeviceId);
+    });
   };
 
   //send parameters to create storage contract in orders-table
@@ -70,6 +73,8 @@ function SyncModalController(SyncService) {
     	} else if (response.data.id){
 
     		SyncService.getCfg((cfg) => {
+          let defaultFolder, index;
+
     			cfg.devices.push({
     				'deviceID': syncModalCtrl.deviceId,
     				'name': syncModalCtrl.deviceName,
@@ -82,21 +87,20 @@ function SyncModalController(SyncService) {
     				"paused":false
     			});
 
-          var defaultFolder = cfg.folders.filter(folder => {
-            folder.id == 'default'  
-          })[0]
+          defaultFolder = cfg.folders.filter((folder, i)=> {
+            index = i;
+            return folder.id == 'default';
+          });
 
-          var i = cfg.folders.indexOf(defaultFolder)
-
-          cfg.folders[i].devices.push({
-              'deviceID': syncModalCtrl.deviceId,
-              'introducedBy':''
-          })
+          cfg.folders[index].devices.push({
+            'deviceID': syncModalCtrl.deviceId,
+            'introducedBy': ''
+          });
 
     			SyncService.updateCfg(cfg, (status) => {
       				if(status == 200){
       					syncModalCtrl.message = 'success';
-                // alow creation od SC
+                // alow creation of SC
                 syncModalCtrl.creationAllowed = true;
       				}
         		})
