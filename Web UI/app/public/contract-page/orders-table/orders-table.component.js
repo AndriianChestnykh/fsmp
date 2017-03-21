@@ -31,6 +31,7 @@ function OrdersTableController(AccountsService, $uibModal) {
       }
     });
 
+    // if user presses 'ok' on modal -> create storage contract
     modalInstance.result.then((args) => {
       let orderType;
 
@@ -41,12 +42,13 @@ function OrdersTableController(AccountsService, $uibModal) {
       } else {
         throw new Error('Can\'t create contract from order of type -> ' + args.type);
       }
-
+      
       ordersTableCtrl.onCreate({
         orderIndex: args.index,
         orderId: args.id,
         orderType: orderType,
-        connectionInfo: args.myDeviceId
+        connectionInfo: args.myDeviceId,
+        weiInitialAmount: args.weiInitialAmount
       });
     }, () => {
       console.log('Sync-modal dismissed');

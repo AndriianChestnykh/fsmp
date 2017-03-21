@@ -88,14 +88,14 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
 
     }
 
-    function createStorageContract(orderIndex, orderId, orderType, connectionInfo) {
+    function createStorageContract(orderIndex, orderId, orderType, connectionInfo, weiInitialAmount) {
       contract.createStorageContract.sendTransaction(
         orderIndex,
         orderId,
         orderType,
         connectionInfo,
         { from: currentAccount,
-          value: 0,
+          value: (orderType == 2) ? weiInitialAmount : 0,
           gas: 1000000 },
 
         (err) => {
@@ -220,6 +220,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
           pricePerGB: parseFloat(scArr[8]),
           weiLeftToWithdraw: parseFloat(scArr[9]),
           withdrawedAtDate: parseDate(scArr[10]),
+          weiAllowedToWithdraw: parseFloat(scArr[11]),
           index: index
         };
         ctrl.storageContracts.push(sc);
@@ -227,17 +228,19 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
       }, (err) => {
         console.log(err);
       });
-
-
     }
 
     function parseDate(timestamp) {
       if (!+timestamp) return '-';
       let date = new Date(+timestamp);
-      let month = date.getMonth() + 1;
-      if (month < 10) month = '0' + month;
-      let dateString = date.getDate() + '-' + month +
-                       '-' + date.getFullYear();
+
+      let isoString = date.toISOString();
+      let ddmmyyyy = isoString.substring(0, 10);
+      ddmmyyyy = ddmmyyyy.split('-').reverse().join('-')
+
+      let hhmmss = isoString.substring(11, 19);
+
+      let dateString = ddmmyyyy + ' ' + hhmmss;
 
       return dateString;
     }
@@ -312,7 +315,6 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
         let myDeviceId = SyncService.getMyDeviceId();
         let partnerDeviceId = (contract.DOConnectionInfo == myDeviceId) ?
                                contract.DSOConnectionInfo : contract.DOConnectionInfo;
-        console.log(partnerDeviceId);
         SyncService.removeDevice(partnerDeviceId);
       }
 

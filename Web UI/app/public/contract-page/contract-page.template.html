@@ -72,7 +72,7 @@
       table-data="$ctrl.buyOrders"
       type="buy"
       owner="public"
-      on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, connectionInfo)">
+      on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, connectionInfo, weiInitialAmount)">
     </orders-table>
     <label>
       <button type="button" ng-click="$ctrl.getBuyOrders()" class="btn btn-success">Get Buy Orders</button>
@@ -85,7 +85,7 @@
       table-data="$ctrl.sellOrders"
       type="sell"
       owner="public"
-      on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, connectionInfo)">
+      on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, connectionInfo, weiInitialAmount)">
     </orders-table>
     <label>
       <button type="button" ng-click="$ctrl.getSellOrders()" class="btn btn-success">Get Sell Orders</button>
