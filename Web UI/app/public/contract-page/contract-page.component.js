@@ -232,7 +232,7 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
 
     function parseDate(timestamp) {
       if (!+timestamp) return '-';
-      let date = new Date(+timestamp);
+      let date = new Date(+timestamp * 1000);
 
       let isoString = date.toISOString();
       let ddmmyyyy = isoString.substring(0, 10);

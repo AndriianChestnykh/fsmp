@@ -8,11 +8,20 @@ SyncService.$inject = ['$http'];
 function SyncService($http) {
   let service = this;
   let baseUrl = 'http://localhost:8384';
-  let apiKey = 'LhrjDydde9XMQyHGZ6qnakyMhFvUmbfX';
+
+  let apiKey = '';
+  // let apiKey = 'LhrjDydde9XMQyHGZ6qnakyMhFvUmbfX';
   let myDeviceId = '';
 
   service.getApiKey = () => apiKey;
+  service.setApiKey = (newApiKey) => {
+    apiKey = newApiKey;
+  };
+
   service.getMyDeviceId = () => myDeviceId;
+  service.setMyDeviceId = (newDeviceId) => {
+    myDeviceId = newDeviceId;
+  };
 
   service.getCfg = (callback) => {
     var req = {
@@ -29,11 +38,6 @@ function SyncService($http) {
       console.log(error);
     });
   };
-
-  // get my device id
-  service.getCfg((cfg) => {
-    myDeviceId = cfg.devices[0].deviceID;
-  });
 
   service.checkDeviceId = (deviceId, callback) => {
     let req = {
@@ -68,21 +72,21 @@ function SyncService($http) {
 
   service.removeDevice = (deviceId) => {
     service.getCfg((cfg) => {
-    	var len = cfg.devices.length;
+    	let len = cfg.devices.length;
+      let index = 0; // index of the default filder
 
     	cfg.devices = cfg.devices.filter(d => {
     		d.deviceID != deviceId;
     	});
 
-      var defaultFolder = cfg.folders.filter(folder => {
-        folder.id == 'default'  
-      })[0]
+      for (let n = cfg.folders.length; index < n; index++) {
+        if (cfg.folders[index].id == 'default') break;
+      }
 
-      var i = cfg.folders.indexOf(defaultFolder)
+      cfg.folders[index].devices = cfg.folders[index].devices.filter(d => {
+        d.deviceID != deviceId;
+      });
 
-      cfg.folders[i].devices = cfg.folders[i].devices.filter(d => {
-        d.deviceID != deviceId;  
-      }) 
 
     	if(len == cfg.devices.length){
     		console.log("No device with id: " + deviceId);
