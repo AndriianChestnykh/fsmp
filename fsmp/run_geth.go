@@ -2,29 +2,37 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os/exec"
+	"strconv"
 	"sync"
 )
 
-func runGeth(execPath string, execParameters []string, wg *sync.WaitGroup) error {
-	cmd := exec.Command(execPath, execParameters...)
-	fmt.Print("Starting Geth with command: ")
-	for i := range cmd.Args {
-		fmt.Print(cmd.Args[i] + " ")
-	}
-	fmt.Println()
+func runGeth(gethOptions *GethRuntimeOptions, wg *sync.WaitGroup) error {
+
+	//gethParameters := []string{"--testnet", "--light", "--rpc", "--rpccorsdomain", "*",
+	//	"--rpcapi", "db,eth,net,web3,personal,accounts", "--rpcaddr", "127.0.0.1", "--rpcport", "8545"}
+
+	cmd := exec.Command(gethOptions.ExecPath,
+		gethOptions.Network,
+		gethOptions.NetworkMode,
+		gethOptions.RpcEnabled,
+		"--rpcapi", gethOptions.RpcApi,
+		"--rpcaddr", gethOptions.RpcAddr,
+		"--rpcport", strconv.Itoa(gethOptions.RpcPort),
+		"--rpccorsdomain", gethOptions.RpcCorsDomain)
+
+	log.Print("Starting Geth with command: ", cmd.Args)
 
 	err := cmd.Start()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Printf("Geth started...")
+	log.Println("Geth started...")
 
 	err = cmd.Wait()
-	log.Printf("Geth: Command finished with error: %v", err)
+	log.Printf("Geth: Command finished with error: %v", err.Error())
 	wg.Done()
 	return err
 }

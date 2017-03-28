@@ -7,14 +7,14 @@ import (
 	"sync"
 )
 
-func runSyncthing(execPath string, wg *sync.WaitGroup) error {
-
-	cmd := exec.Command(execPath)
+func runSyncthing(execPath string, guiAddress string, wg *sync.WaitGroup) error {
+	cmd := exec.Command(execPath, "--gui-address", guiAddress)
 	err := cmd.Start()
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Syncthing started...")
+	log.Println("Starting syncthing with command: ", cmd.Args)
+	log.Println("Syncthing started...")
 	err = cmd.Wait()
 	log.Printf("Syncthing: Command finished with error: %v", err)
 	wg.Done()

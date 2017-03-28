@@ -4,10 +4,11 @@ package main
 import (
 	"os/exec"
 	"runtime"
+	"strconv"
 )
 
 // open opens the specified URL in the default browser of the user.
-func openBrowser(url string) error {
+func openBrowser(address string, port int) error {
 	var cmd string
 	var args []string
 
@@ -20,6 +21,8 @@ func openBrowser(url string) error {
 	default: // "linux", "freebsd", "openbsd", "netbsd"
 		cmd = "xdg-open"
 	}
+
+	url := address + ":" + strconv.Itoa(port)
 	args = append(args, url)
 	return exec.Command(cmd, args...).Start()
 }
