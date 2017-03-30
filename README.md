@@ -16,26 +16,7 @@ All Data Owner data is securely encrypted by his/her encryption key and redundan
 Our first (but not the only) public blockchain and cryptocurrency option is Ethereum platform.
 
 ###System concept schema
-TODO:  Add correct labels to arrows
 ![System concept schema](images/Concept.png)
 
-###Smart Contract functions
-####Trading 
-This function of Ethereum Smart Contract is to support free market of disk space between DO and DSO.
-![Trading](images/TradingUI.png)
-####Escrow 
-Smart Contract keeps agreement status between DO and DSO. It calculates payments which can we withdrawed by DSO.
-![Escrow](images/EscrowUI.png)
-####Routing
-TODO: Info here
-
-###Client functions
-TODO: Info here
-
-
-###Network architecture 
-TODO: Network architecture schema
 ###Process flow diagram 
 ![Escrow](images/ProcessFlow.png)
-##FAQ
-TODO: Questions & Answers
