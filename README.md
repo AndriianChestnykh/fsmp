@@ -1,8 +1,8 @@
 # Decentralized File Storage Marketplace 
 
-Main purpose of the system is to provide decentralized and secure disk space trading platform. The principle is free market between Data Owners (DO) who need to rent disk space to store/backup their files securely and Disk Space Owners (DSO) who rent their disks, which are empty or not copmletely occupied with some data.
+Main purpose of the system is to provide decentralized and secure disk space trading platform. The principle is free market between Data Owners (DO) who need to rent disk space to store/backup their files securely and Disk Space Owners (DSO) who rent their disks, which are empty or not completely occupied with some data.
 
-The File Storage Marketplace system is decentralized unlike traditional cloud storages like Dropbox or Google drive. There is no single party who controls DO and DSO cooperation in any possible aspect. 
+File Storage Marketplace is decentralized unlike traditional cloud storages. There is no single party, who controls DO and DSO cooperation in any possible aspect. 
 
 ## **Nobody except you can do the following**
 
@@ -12,8 +12,8 @@ The File Storage Marketplace system is decentralized unlike traditional cloud st
 * **Switch you off the system**
 
 
-All Data Owner data is securely encrypted by his/her encryption key and redundantly stored between different Data Storage Owners, who are intencivized to be online by Data Owners payments through Smart Contract of public blockchains.
-Our first, but not the single, public blockchain and cryptocurrency option is Ethereum platform.
+All Data Owner data is securely encrypted by his/her encryption key and redundantly stored between different Data Storage Owners. Data Owner makes incentive for Data Storage Owners by his/her cryptocurrency payments through Smart Contract of public blockchains.
+Our first (but not the only) public blockchain and cryptocurrency option is Ethereum platform.
 
 ###System concept schema
 TODO:  Add correct labels to arrows
