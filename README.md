@@ -1,8 +1,8 @@
 # Decentralized File Storage Marketplace 
 
-Main purpose of the system is to provide decentralized and secure disk space trading platform. The principle is free market between Data Owners (DO) who need to rent disk space to store/backup their files securely and Disk Space Owners (DSO) who rent their disks, which are empty or not completely occupied with some data.
+Main purpose of the system is to provide public, decentralized and secure disk space renting platform. The principle is free market between Data Owners (DO), who need disk space to store/backup private data, and Disk Space Owners (DSO), who provide disks for that purpose.
 
-File Storage Marketplace is decentralized unlike traditional cloud storages. There is no single party, who controls DO and DSO cooperation in any possible aspect. 
+File Storage Marketplace is absolutely decentralized unlike traditional cloud storages. There is no single party, who controls DO and DSO cooperation in any possible aspect. 
 
 ### **There is no authority, who is physically able to do the following**
 
