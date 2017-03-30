@@ -4,7 +4,7 @@ Main purpose of the system is to provide decentralized and secure disk space tra
 
 File Storage Marketplace is decentralized unlike traditional cloud storages. There is no single party, who controls DO and DSO cooperation in any possible aspect. 
 
-## **Nobody except you can do the following**
+### **There is no authority, who is physically able to do the following**
 
 * **Access your data**
 * **Steal your payments**
@@ -12,7 +12,7 @@ File Storage Marketplace is decentralized unlike traditional cloud storages. The
 * **Switch you off the system**
 
 
-All Data Owner data is securely encrypted by his/her encryption key and redundantly stored between different Data Storage Owners. Data Owner makes incentive for Data Storage Owners by his/her cryptocurrency payments through Smart Contract of public blockchains.
+Data Owner data is securely encrypted by his/her encryption key and redundantly stored between different Data Storage Owners. Data Owner makes incentive for Data Storage Owners by his/her cryptocurrency payments through Smart Contract of public blockchains.
 Our first (but not the only) public blockchain and cryptocurrency option is Ethereum platform.
 
 ### System concept schema
