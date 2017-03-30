@@ -22,10 +22,10 @@ TODO:  Add correct labels to arrows
 ###Smart Contract functions
 ####Trading 
 This function of Ethereum Smart Contract is to support free market of disk space between DO and DSO.
-![Trading](images/Trading UI.png)
+![Trading](images/TradingUI.png)
 ####Escrow 
 Smart Contract keeps agreement status between DO and DSO. It calculates payments which can we withdrawed by DSO.
-![Escrow](images/Escrow UI.png)
+![Escrow](images/EscrowUI.png)
 ####Routing
 TODO: Info here
 
@@ -36,6 +36,6 @@ TODO: Info here
 ###Network architecture 
 TODO: Network architecture schema
 ###Process flow diagram 
-![Escrow](images/Process Flow.png)
+![Escrow](images/ProcessFlow.png)
 ##FAQ
 TODO: Questions & Answers
