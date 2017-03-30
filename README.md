@@ -15,8 +15,8 @@ File Storage Marketplace is decentralized unlike traditional cloud storages. The
 All Data Owner data is securely encrypted by his/her encryption key and redundantly stored between different Data Storage Owners. Data Owner makes incentive for Data Storage Owners by his/her cryptocurrency payments through Smart Contract of public blockchains.
 Our first (but not the only) public blockchain and cryptocurrency option is Ethereum platform.
 
-###System concept schema
+### System concept schema
 ![System concept schema](images/Concept.png)
 
-###Process flow diagram 
+### Process flow diagram 
 ![Escrow](images/ProcessFlow.png)
