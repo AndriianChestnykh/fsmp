@@ -21,6 +21,7 @@ var gethOptions GethRuntimeOptions
 type SynctingRuntimeOptions struct {
 	ExecPath   string
 	GuiAddress string
+	GuiApiKey  string
 }
 
 var syncthingOptions SynctingRuntimeOptions
@@ -53,10 +54,13 @@ func init() {
 	flag.StringVar(&gethOptions.RpcApi, "geth-rpcapi", gethOptions.RpcApi, "Geth RPC API")
 	flag.StringVar(&gethOptions.RpcCorsDomain, "geth-rpccorsdomain", gethOptions.RpcCorsDomain, "Geth RPC API")
 
+	apikey, _ := readSyncthingApiKey()
+
 	syncthingOptions = SynctingRuntimeOptions{
 		//"Syncthing/syncthing-windows-amd64-v0.14.25/syncthing.exe"
 		ExecPath:   "Syncthing/syncthing.exe",
 		GuiAddress: "http://127.0.0.1:8384",
+		GuiApiKey:  apikey,
 	}
 
 	flag.StringVar(&syncthingOptions.ExecPath, "syncthing-execpath", syncthingOptions.ExecPath, "Syncthing exec path")
