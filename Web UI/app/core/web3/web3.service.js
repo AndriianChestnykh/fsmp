@@ -4,8 +4,8 @@
 angular.module('core')
 .service('Web3Service', Web3Service);
 
-Web3Service.$inject = ['appConfig', '$rootScope'];
-function Web3Service(appConfig, $rootScope) {
+Web3Service.$inject = ['appConfig'];
+function Web3Service(appConfig) {
   let Web3Service = this;
 
   let web3 = new Web3();

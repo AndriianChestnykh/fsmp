@@ -19,6 +19,9 @@ OrdersTableController.$inject = ['AccountsService', '$uibModal']
 function OrdersTableController(AccountsService, $uibModal) {
   let ordersTableCtrl = this;
 
+  // get currentAccount for sorting out my orders from all orders
+  ordersTableCtrl.currentAccount = AccountsService.getCurrentAccount();
+
   ordersTableCtrl.openSyncModal = (deviceId, deviceName, index, id, type) => {
     let modalInstance = $uibModal.open({
       component: 'syncModal',
@@ -42,7 +45,7 @@ function OrdersTableController(AccountsService, $uibModal) {
       } else {
         throw new Error('Can\'t create contract from order of type -> ' + args.type);
       }
-      
+
       ordersTableCtrl.onCreate({
         orderIndex: args.index,
         orderId: args.id,
@@ -51,7 +54,7 @@ function OrdersTableController(AccountsService, $uibModal) {
         weiInitialAmount: args.weiInitialAmount
       });
     }, () => {
-      console.log('Sync-modal dismissed');
+      // console.log('Sync-modal dismissed');
     });
   };
 

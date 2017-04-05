@@ -7,18 +7,35 @@ angular.module('core')
 SyncService.$inject = ['$http'];
 function SyncService($http) {
   let service = this;
-  let baseUrl = 'http://localhost:8384';
+  // development
+  let baseUrl = '';
+  // let baseUrl = 'http://localhost:8384';
 
+  // development
   let apiKey = '';
   // let apiKey = 'LhrjDydde9XMQyHGZ6qnakyMhFvUmbfX';
   let myDeviceId = '';
 
+  // fetch API key from the server
+  // fetchApiKey('http://127.0.0.1:8080/syncthingoptions');
+
+  service.setBaseUrl = (url) => {
+    baseUrl = url;
+    console.log('Syncthing API Address ->', baseUrl);
+  };
+  service.getBaseUrl = () => baseUrl;
+
   service.getApiKey = () => apiKey;
   service.setApiKey = (newApiKey) => {
     apiKey = newApiKey;
+    // refresh user's device ID
+    service.getCfg((cfg) => {
+      myDeviceId = cfg.devices[0].deviceID;
+    });
   };
 
   service.getMyDeviceId = () => myDeviceId;
+
   service.setMyDeviceId = (newDeviceId) => {
     myDeviceId = newDeviceId;
   };
@@ -76,7 +93,7 @@ function SyncService($http) {
       let index = 0; // index of the default filder
 
     	cfg.devices = cfg.devices.filter(d => {
-    		d.deviceID != deviceId;
+    		return d.deviceID != deviceId;
     	});
 
       for (let n = cfg.folders.length; index < n; index++) {
@@ -84,9 +101,8 @@ function SyncService($http) {
       }
 
       cfg.folders[index].devices = cfg.folders[index].devices.filter(d => {
-        d.deviceID != deviceId;
+        return d.deviceID != deviceId;
       });
-
 
     	if(len == cfg.devices.length){
     		console.log("No device with id: " + deviceId);
@@ -98,7 +114,19 @@ function SyncService($http) {
         })
     	}
     })
-	}
+	}; // end removeDevice
+
+  // function fetchApiKey(url) {
+  //   $http({
+  //     method: 'GET',
+  //     url: url
+  //   }).then((response) => {
+  //     console.log(response.data);
+  //   }, (error) => {
+  //     console.log(error);
+  //   });
+  // }
+
 }
 
 }());

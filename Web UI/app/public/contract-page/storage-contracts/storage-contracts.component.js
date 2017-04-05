@@ -8,7 +8,8 @@ angular.module('public')
   controllerAs: 'SCCtrl',
   bindings: {
     scData: '<',
-    owner: "@",
+    owner: '@',
+    etherPrice: '@',
     onContractManage: '&'
   }
 });
@@ -29,7 +30,8 @@ function StorageContractsController(AccountsService) {
       method: method,
       wei: wei
     });
-  };
+  }; // end SCCtrl.manageStorageContract
+
 }
 
 }());

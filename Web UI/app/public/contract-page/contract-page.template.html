@@ -1,65 +1,127 @@
-<div class="row center-account indent">
-    <div class="row">
-        <form class="form-inline">
-            <div class="form-group">
-                <label for="accountPassword">Account password:
-                    <input type="password" ng-model="password" class="form-control" id="accountPassword" placeholder="Account password"/>
-                </label>
-                <button ng-click="$ctrl.unlockAccount(password); password='';" class="btn btn-primary">Unlock account</button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <div class="row indent">
     <div class="col-lg-6">
         <h1>Buy Orders</h1>
 
         <h3>Create Buy Order</h3>
-        <form>
-            <div class="form-group">
-                <label>Volume GB:
-                    <input type="number" ng-model="cbo.volumeGB" class="form-control" placeholder="Volume GB"/>
-                </label>
-            </div>
-            <div class="form-group">
-                <label>Price Per GB:
-                    <input type="number" ng-model="cbo.pricePerGB" class="form-control" placeholder="Price Per GB"/>
-                </label>
-            </div>
-            <div class="form-group">
-              <label>Connection Info:
-                  <input type="text" ng-model="cbo.connectionInfo" class="form-control" placeholder="Connection Info" />
-              </label>
-            </div>
-            <div class="form-group">
-                <label>Wei Initial Amount:
-                    <input type="number" ng-model="cbo.weiInitialAmount" class="form-control" placeholder="Wei Initial Amount"/>
-                </label>
-            </div>
-            <button ng-click="$ctrl.createBuyOrder(cbo)" ng-disabled="$ctrl.createBuyOrderDisabled" class="btn btn-success">Create Buy Order</button>
+        <form class="row" name="cbo-form">
+
+          <div class="form-group">
+            <label>Volume:
+              <div class="input-group">
+                <input type="number"
+                      ng-model="cbo.volumeGB"
+                      class="form-control"
+                      placeholder="Volume you want to buy..."/>
+                <span class="input-group-addon">GB</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>Price Per GB:
+              <div class="input-group">
+                <input type="number"
+                      ng-model="cbo.pricePerGB"
+                      class="form-control"
+                      placeholder="Price you want to pay..."/>
+                <span class="input-group-addon">
+                  {{(cbo.pricePerGB || 0) * $ctrl.etherPrice | number:2}}$
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>Connection Info:
+              <div class="input-group">
+                <input type="text"
+                      ng-model="$ctrl.myDeviceId"
+                      class="form-control"
+                      placeholder="Your Device ID..." />
+                <span class="input-group-addon">
+
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>Initial Amount:
+              <div class="input-group">
+                <input type="number"
+                      ng-model="cbo.weiInitialAmount"
+                      class="form-control"
+                      placeholder="Amount of ether you put into contract..."/>
+                <span class="input-group-addon">
+                  {{(cbo.weiInitialAmount || 0) * $ctrl.etherPrice | number:2}}$
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <button ng-click="$ctrl.createBuyOrder(cbo)"
+                    ng-disabled="$ctrl.createBuyOrderDisabled"
+                    class="btn btn-success">Create Buy Order</button>
+          </div>
+
         </form>
     </div>
+
+
     <div class="col-lg-6">
         <h1>Sell Orders</h1>
         <h3>Create Sell Order</h3>
+
         <form>
-            <div class="form-group">
-                <label>Volume GB:
-                    <input type="number" ng-model="cso.volumeGB" class="form-control" placeholder="Volume GB"/>
-                </label>
-            </div>
-            <div class="form-group">
-                <label>Price Per GB:
-                    <input type="number" ng-model="cso.pricePerGB" class="form-control" placeholder="Price Per GB"/>
-                </label>
-            </div>
-            <div class="form-group">
-                <label>Connection Info:
-                  <input type="text" ng-model="cso.connectionInfo" class="form-control" placeholder="Connection Info" />
-                </label>
-            </div>
-            <button ng-click="$ctrl.createSellOrder(cso);" ng-disabled="$ctrl.createSellOrderDisabled" class="btn btn-success">Create Sell Order</button>
+
+          <div class="form-group">
+            <label>Volume GB:
+              <div class="input-group">
+                <input type="number"
+                      ng-model="cso.volumeGB"
+                      class="form-control"
+                      placeholder="Volume GB"/>
+                <span class="input-group-addon">
+                  GB
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>Price Per GB:
+              <div class="input-group">
+                <input type="number"
+                      ng-model="cso.pricePerGB"
+                      class="form-control"
+                      placeholder="Price Per GB"/>
+                <span class="input-group-addon">
+                  {{(cso.pricePerGB || 0) * $ctrl.etherPrice | number:2}}$
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>Connection Info:
+              <div class="input-group">
+                <input type="text"
+                      ng-model="$ctrl.myDeviceId"
+                      class="form-control"
+                      placeholder="Connection Info" />
+                <span class="input-group-addon">
+
+                </span>
+              </div>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <button ng-click="$ctrl.createSellOrder(cso);"
+                    ng-disabled="$ctrl.createSellOrderDisabled"
+                    class="btn btn-success pull-right">Create Sell Order</button>
+          </div>
         </form>
     </div>
 </div>
@@ -94,7 +156,6 @@
 </div>
 
 
-
 <div class="row indent">
   <div class="col-lg-6">
     <h3>My Buy Orders</h3>
@@ -124,6 +185,7 @@
   <storage-contracts
     sc-data="$ctrl.storageContracts"
     owner="public"
+    ether-price="{{$ctrl.etherPrice}}"
     on-contract-manage="$ctrl.manageStorageContract(storageContractIndex, storageContractID, method, wei)">
   </storage-contracts>
 </div>
@@ -138,6 +200,7 @@
   <storage-contracts
     sc-data="$ctrl.storageContracts"
     owner="me"
+    ether-price="{{$ctrl.etherPrice}}"
     on-contract-manage="$ctrl.manageStorageContract(storageContractIndex, storageContractID, method, wei)">
   </storage-contracts>
 </div>

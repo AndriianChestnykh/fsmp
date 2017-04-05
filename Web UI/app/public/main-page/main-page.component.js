@@ -8,9 +8,9 @@ angular.module('public')
     controllerAs: 'mainPageCtrl'
   });
 
-mainPageController.$inject = ['appConfig'];
+mainPageController.$inject = ['appConfig', 'SyncService'];
 
-function mainPageController(appConfig) {
+function mainPageController(appConfig, SyncService) {
   const mainPageCtrl = this;
 
   mainPageCtrl.setContractAddress = (addr) => {
@@ -19,6 +19,18 @@ function mainPageController(appConfig) {
 
   mainPageCtrl.setHttpProvider = (prov) => {
     appConfig.setHttpProvider(prov);
+  };
+
+  mainPageCtrl.setEtherPrice = (price) => {
+    appConfig.setEtherPrice(price);
+  };
+
+  mainPageCtrl.setSyncApiKey = (key) => {
+    SyncService.setApiKey(key);
+  };
+
+  mainPageCtrl.setSyncApiAddress = (addr) => {
+    SyncService.setBaseUrl(addr);
   };
 }
 

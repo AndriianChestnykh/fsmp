@@ -13,9 +13,18 @@ ContractPageController.$inject = [
   'AccountsService',
   '$scope',
   '$q',
+  '$location',
   'SyncService'
 ];
-function ContractPageController(appConfig, Web3Service, AccountsService, $scope, $q, SyncService) {
+function ContractPageController(
+  appConfig,
+  Web3Service,
+  AccountsService,
+  $scope,
+  $q,
+  $location,
+  SyncService
+) {
 
     var ctrl = this,
         web3, currentAccount, contractAddress, contract;
@@ -28,9 +37,8 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
 
     ctrl.storageContracts = [];
 
-    ctrl.createBuyOrderDisabled = false;
+    ctrl.etherPrice = 0;
 
-    ctrl.unlockAccount = unlockAccount;//?????????
     ctrl.createBuyOrder = createBuyOrder;
     ctrl.createSellOrder = createSellOrder;
     ctrl.createStorageContract = createStorageContract;
@@ -40,25 +48,22 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
     ctrl.cancelOrder = cancelOrder;
     ctrl.manageStorageContract = manageStorageContract;
 
-    function unlockAccount(pwd) {
-      web3.personal.unlockAccount(currentAccount, pwd, 10000);
-    }
-
     function createBuyOrder(cbo) {
       //prevent multiple requests
       ctrl.createBuyOrderDisabled = true;
 
       contract.createBuyOrder.sendTransaction(
         cbo.volumeGB,
-        cbo.pricePerGB,
-        cbo.connectionInfo,
+        web3.toWei(cbo.pricePerGB, 'ether'),
+        ctrl.myDeviceId,
 
         {from: currentAccount,
-          value: cbo.weiInitialAmount,
+          value: web3.toWei(cbo.weiInitialAmount, 'ether'),
           gas: 1000000},
       // callback
         (err) => {
           if (err) {
+            ctrl.createBuyOrderDisabled = false;
             console.log(err);
           } else {
             getBuyOrders();
@@ -72,8 +77,8 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
 
       contract.createSellOrder.sendTransaction(
             cso.volumeGB,
-            cso.pricePerGB,
-            cso.connectionInfo,
+            web3.toWei(cso.pricePerGB, 'ether'),
+            ctrl.myDeviceId,
             {from: currentAccount,
               value: 0,
               gas: 1000000},
@@ -146,10 +151,9 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
         let gbo = {
           id: +gboArr[0],
           DO: gboArr[1],
-          DOShort: gboArr[1].toString().substring(0, 10) + '...',
           volumeGB: parseFloat(gboArr[2]),
-          pricePerGB: parseFloat(gboArr[3]),
-          weiInitialAmount: parseFloat(gboArr[4]),
+          pricePerGB: web3.fromWei(gboArr[3], 'ether'),
+          weiInitialAmount: web3.fromWei(gboArr[4], 'ether'),
           connectionInfo: gboArr[5],
           index: index
         };
@@ -177,9 +181,8 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
         let so = {
           id: +soArr[0],
           DO: soArr[1],
-          DOShort: soArr[1].toString().substring(0, 10) + '...',
           volumeGB: parseFloat(soArr[2]),
-          pricePerGB: parseFloat(soArr[3]),
+          pricePerGB: web3.fromWei(soArr[3], 'ether'),
           connectionInfo: soArr[4],
           index: index
         };
@@ -209,18 +212,16 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
         let sc = {
           id: +scArr[0],
           DOAddress: scArr[1],
-          DOAddressShort: scArr[1].toString().substring(0, 10) + '...',
           DSOAddress: scArr[2],
-          DSOAddressShort: scArr[2].toString().substring(0, 10) + '...',
           DOConnectionInfo: scArr[3],
           DSOConnectionInfo: scArr[4],
           volumeGB: parseFloat(scArr[5]),
           startDate: parseDate(scArr[6]),
           stopDate: parseDate(scArr[7]),
-          pricePerGB: parseFloat(scArr[8]),
-          weiLeftToWithdraw: parseFloat(scArr[9]),
+          pricePerGB: web3.fromWei(scArr[8], 'ether'),
+          weiLeftToWithdraw: web3.fromWei(scArr[9], 'ether'),
           withdrawedAtDate: parseDate(scArr[10]),
-          weiAllowedToWithdraw: parseFloat(scArr[11]),
+          weiAllowedToWithdraw: web3.fromWei(scArr[11], 'ether'),
           index: index
         };
         ctrl.storageContracts.push(sc);
@@ -329,6 +330,20 @@ function ContractPageController(appConfig, Web3Service, AccountsService, $scope,
     }
 
     function onInit() {
+      ctrl.etherPrice = appConfig.getEtherPrice();
+
+      // FOR DEVELOPMENT
+      // SyncService.setApiKey('LhrjDydde9XMQyHGZ6qnakyMhFvUmbfX');
+      // END FOR DEVELOPMENT
+
+      //get user's device ID if present to put into "create order" field
+      ctrl.myDeviceId = SyncService.getMyDeviceId();
+
+      if (!ctrl.myDeviceId || !SyncService.getBaseUrl()) {
+        alert('You must provide Syncthing API Key and Syncthing API address');
+        $location.path('/main');
+      }
+
       web3 = Web3Service.getWeb3();
 
       currentAccount = AccountsService.getCurrentAccount();

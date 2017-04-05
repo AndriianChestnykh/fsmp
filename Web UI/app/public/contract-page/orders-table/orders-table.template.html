@@ -14,10 +14,10 @@
     ng-if="ordersTableCtrl.owner === 'public' ||
            o.DO === ordersTableCtrl.currentAccount">
     <td>{{o.id}}</td>
-    <td>{{o.DOShort}}</td>
+    <td class="ellipsis">{{o.DO}}</td>
     <td>{{o.volumeGB}}</td>
     <td>{{o.pricePerGB}}</td>
-    <td>{{o.connectionInfo}}</td>
+    <td class="ellipsis">{{o.connectionInfo}}</td>
 
     <!-- Buy Order -->
     <td ng-if="ordersTableCtrl.type === 'buy'">
@@ -26,17 +26,6 @@
 
     <!-- Create SC from Public -->
     <td ng-if="ordersTableCtrl.owner === 'public'">
-      <!-- <div class="form-group">
-        <label>
-          My connection Info
-          <input type="text" ng-model="connectionInfo" class="form-control">
-        </label>
-        <button ng-click="ordersTableCtrl.createStorageContract(o.index, o.id, ordersTableCtrl.type, connectionInfo)"
-                ng-disabled="!connectionInfo" class="btn btn-sm btn-success">
-                Create Storage Contract
-      </button>
-      </div> -->
-
       <button ng-click="ordersTableCtrl.openSyncModal(o.connectionInfo, o.DO, o.index, o.id, ordersTableCtrl.type)"
               class="btn btn-sm btn-success">
         Go to Sync

@@ -1,9 +1,16 @@
-table {
-  border-collapse: collapse;
+td, th {
+  text-align: center;
 }
 
-td, th {
-  border: 1px solid #000;
+td.ellipsis {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.currency {
+  cursor: pointer;
 }
 
 .nav__list {

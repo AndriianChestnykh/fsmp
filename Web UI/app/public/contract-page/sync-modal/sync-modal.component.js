@@ -13,11 +13,12 @@ angular.module('public')
   controllerAs: 'syncModalCtrl'
 });
 
-SyncModalController.$inject = ['SyncService'];
-function SyncModalController(SyncService) {
+SyncModalController.$inject = ['SyncService', 'Web3Service'];
+function SyncModalController(SyncService, Web3Service) {
   let syncModalCtrl = this;
 
   let index, id, type;
+  let web3 = Web3Service.getWeb3();
 
   syncModalCtrl.$onInit = () => {
     syncModalCtrl.myDeviceId = SyncService.getMyDeviceId();
@@ -48,7 +49,8 @@ function SyncModalController(SyncService) {
       index,
       id,
       type,
-      weiInitialAmount: syncModalCtrl.weiInitialAmount
+      weiInitialAmount: web3
+          .toWei(syncModalCtrl.weiInitialAmount, 'ether')
     };
     syncModalCtrl.close({$value: storageContractArgs});
   };

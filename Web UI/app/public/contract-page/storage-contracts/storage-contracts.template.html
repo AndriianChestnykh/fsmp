@@ -8,25 +8,44 @@
     <th>Volume, GB</th>
     <th>Start Date</th>
     <th>Stop Date</th>
-    <th>Price per GB</th>
-    <th>Wei left to withdraw</th>
+    <th>Price per GB
+    <!-- TODO: make a component from this -->
+      <span class="label label-info currency"
+            ng-click="ether = !ether">
+        <span ng-show="ether">ether</span>
+        <span ng-hide="ether">dollar</span>
+      </span>
+    </th>
+    <th>Ether left to withdraw
+      <span class="label label-info currency"
+            ng-click="ether = !ether">
+        <span ng-show="ether">ether</span>
+        <span ng-hide="ether">dollar</span>
+      </span>
+    </th>
     <th>Withdrawed at date</th>
-    <th>Wei allowed to withdraw</th>
+    <th>Ether allowed to withdraw</th>
   </tr>
   <tr ng-repeat="sc in SCCtrl.scData"
       ng-if="SCCtrl.owner === 'public' ||
              sc.DOAddress == SCCtrl.currentAccount ||
              sc.DSOAddress === SCCtrl.currentAccount">
     <td>{{sc.id}}</td>
-    <td>{{sc.DOAddressShort}}</td>
-    <td>{{sc.DSOAddressShort}}</td>
-    <td>{{sc.DOConnectionInfo}}</td>
-    <td>{{sc.DSOConnectionInfo}}</td>
+    <td class="ellipsis">{{sc.DOAddress}}</td>
+    <td class="ellipsis">{{sc.DSOAddress}}</td>
+    <td class="ellipsis">{{sc.DOConnectionInfo}}</td>
+    <td class="ellipsis">{{sc.DSOConnectionInfo}}</td>
     <td>{{sc.volumeGB}}</td>
     <td>{{sc.startDate}}</td>
     <td>{{sc.stopDate}}</td>
-    <td>{{sc.pricePerGB}}</td>
-    <td>{{sc.weiLeftToWithdraw}}</td>
+    <td>
+      <span ng-show="ether">{{sc.pricePerGB}}</span>
+      <span ng-hide="ether">{{sc.pricePerGB * SCCtrl.etherPrice | number:2}}</span>
+    </td>
+    <td>
+      <span ng-show="ether">{{sc.weiLeftToWithdraw}}</span>
+      <span ng-hide="ether">{{sc.weiLeftToWithdraw * SCCtrl.etherPrice | number:2}}</span>
+    </td>
     <td>{{sc.withdrawedAtDate}}</td>
     <td>{{sc.weiAllowedToWithdraw}}</td>
 
@@ -46,7 +65,9 @@
     </td>
     <td ng-if="SCCtrl.owner == 'me'">
       <button
-      ng-if="sc.DSOAddress === SCCtrl.currentAccount"
+      ng-if="sc.DSOAddress === SCCtrl.currentAccount ||
+            (sc.DOAddress === SCCtrl.currentAccount &&
+             sc.stopDate !== '-')"
       ng-click="SCCtrl.manageStorageContract(sc.index, sc.id, 'withdrawFromStorageContract')"
       class="btn btn-success">
         Withdraw From Storage Contract
