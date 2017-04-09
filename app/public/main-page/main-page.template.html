@@ -1,0 +1,62 @@
+<h1 class="text-center">Settings</h1>
+
+<form>
+  <div class="input-group">
+    <input type="text" ng-model="httpProvider"
+           class="form-control"/>
+    <div class="input-group-btn">
+      <button ng-click="mainPageCtrl.setHttpProvider(httpProvider); httpProvider = ''"
+              class="btn btn-primary">
+        Set Ethereum HTTP Provider
+      </button>
+    </div>
+  </div>
+
+  <br />
+  <div class="input-group">
+    <input type="text" ng-model="address"
+           class="form-control"/>
+    <div class="input-group-btn">
+      <button ng-click="mainPageCtrl.setContractAddress(address); address = ''"
+              class="btn btn-primary">
+        Set Contract Address
+      </button>
+    </div>
+  </div>
+
+  <br />
+  <div class="input-group">
+    <input type="text" ng-model="etherPrice"
+           class="form-control"/>
+    <div class="input-group-btn">
+      <button ng-click="mainPageCtrl.setEtherPrice(etherPrice); etherPrice = ''"
+              class="btn btn-primary">
+        Set Ether Price
+      </button>
+    </div>
+  </div>
+
+  <br />
+  <div class="input-group">
+    <input type="text" ng-model="apiKey"
+           class="form-control"/>
+    <div class="input-group-btn">
+      <button ng-click="mainPageCtrl.setSyncApiKey(apiKey); apiKey = ''"
+              class="btn btn-primary">
+        Set Syncthing API Key
+      </button>
+    </div>
+  </div>
+
+  <br />
+  <div class="input-group">
+    <input type="text" ng-model="apiAddress"
+           class="form-control"/>
+    <div class="input-group-btn">
+      <button ng-click="mainPageCtrl.setSyncApiAddress(apiAddress); apiAddress = ''"
+              class="btn btn-primary">
+        Set Syncthing API Address
+      </button>
+    </div>
+  </div>
+</form>
