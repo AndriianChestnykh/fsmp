@@ -8,46 +8,68 @@
     <th>Volume, GB</th>
     <th>Start Date</th>
     <th>Stop Date</th>
-    <th>Price per GB
-    <!-- TODO: make a component from this -->
-      <span class="label label-info currency"
-            ng-click="ether = !ether">
-        <span ng-show="ether">ether</span>
-        <span ng-hide="ether">dollar</span>
-      </span>
+    <th>Price per GB<br />
+      <currency-label cathegory="pricePerGB"></currency-label>
     </th>
-    <th>Ether left to withdraw
-      <span class="label label-info currency"
-            ng-click="ether = !ether">
-        <span ng-show="ether">ether</span>
-        <span ng-hide="ether">dollar</span>
-      </span>
+    <th>Left to withdraw<br />
+      <currency-label cathegory="weiLeftToWithdraw"></currency-label>
     </th>
     <th>Withdrawed at date</th>
-    <th>Ether allowed to withdraw</th>
+    <th>Allowed to withdraw<br />
+        <currency-label cathegory="weiAllowedToWithdraw"></currency-label>
+      </th>
   </tr>
   <tr ng-repeat="sc in SCCtrl.scData"
       ng-if="SCCtrl.owner === 'public' ||
              sc.DOAddress == SCCtrl.currentAccount ||
              sc.DSOAddress === SCCtrl.currentAccount">
     <td>{{sc.id}}</td>
-    <td class="ellipsis">{{sc.DOAddress}}</td>
-    <td class="ellipsis">{{sc.DSOAddress}}</td>
-    <td class="ellipsis">{{sc.DOConnectionInfo}}</td>
-    <td class="ellipsis">{{sc.DSOConnectionInfo}}</td>
+    <td class="ellipsis">
+      <span uib-popover="{{sc.DOAddress}}" 
+            popover-placement="top-left">{{sc.DOAddress}}</span>
+    </td>
+    <td class="ellipsis">
+      <span uib-popover="{{sc.DSOAddress}}" 
+            popover-placement="top-left">{{sc.DSOAddress}}</span>
+    </td>
+    <td class="ellipsis">
+      <span uib-popover="{{sc.DOConnectionInfo}}" 
+            popover-placement="top-left">{{sc.DOConnectionInfo}}
+      </span>
+    </td>
+    <td class="ellipsis">
+      <span uib-popover="{{sc.DSOConnectionInfo}}" 
+            popover-placement="top-left">{{sc.DSOConnectionInfo}}
+      </span>
+    </td>
     <td>{{sc.volumeGB}}</td>
     <td>{{sc.startDate}}</td>
     <td>{{sc.stopDate}}</td>
     <td>
-      <span ng-show="ether">{{sc.pricePerGB}}</span>
-      <span ng-hide="ether">{{sc.pricePerGB * SCCtrl.etherPrice | number:2}}</span>
+      <span ng-show="SCCtrl.inEther.pricePerGB">
+        {{sc.pricePerGB * 1 | number:2}} ETH
+      </span>
+      <span ng-hide="SCCtrl.inEther.pricePerGB">
+        {{sc.pricePerGB * SCCtrl.etherPrice | number:2}} $
+      </span>
     </td>
     <td>
-      <span ng-show="ether">{{sc.weiLeftToWithdraw}}</span>
-      <span ng-hide="ether">{{sc.weiLeftToWithdraw * SCCtrl.etherPrice | number:2}}</span>
+      <span ng-show="SCCtrl.inEther.weiLeftToWithdraw">
+        {{sc.weiLeftToWithdraw * 1 | number:2}} ETH
+      </span>
+      <span ng-hide="SCCtrl.inEther.weiLeftToWithdraw">
+        {{sc.weiLeftToWithdraw * SCCtrl.etherPrice | number:2}} $
+      </span>
     </td>
     <td>{{sc.withdrawedAtDate}}</td>
-    <td>{{sc.weiAllowedToWithdraw}}</td>
+    <td>
+      <span ng-show="SCCtrl.inEther.weiAllowedToWithdraw">
+        {{sc.weiAllowedToWithdraw * 1 | number:2}} ETH
+      </span>
+      <span ng-hide="SCCtrl.inEther.weiAllowedToWithdraw">
+        {{sc.weiAllowedToWithdraw * SCCtrl.etherPrice | number:2}} $
+      </span>
+    </td>
 
     <td ng-if="SCCtrl.owner == 'me'">
       <button

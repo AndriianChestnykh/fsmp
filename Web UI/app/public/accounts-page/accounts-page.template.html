@@ -17,21 +17,25 @@
 <table class="table table-condensed">
     <tr>
         <th>Current</th>
-        <th>Account</th>
-        <th>Balance</th>
+        <th>Balance
+          <currency-label cathegory="inEther"></currency-label>
+        </th>
     </tr>
     <tr ng-repeat="account in $ctrl.accounts" 
         ng-class="{
                   'success': account.number === $ctrl.currentAccount
                 }">
         <td class="ellipsis">
-          <span>
+          <span uib-popover="{{account.number}}" popover-placement="top-left">
             {{account.number}}
           </span>
         </td>
         <td>
-          <span>
+          <span ng-show="$ctrl.inEther">
             {{account.balance | number:2}} ETH
+          </span>
+          <span ng-hide="$ctrl.inEther">
+            {{account.balance * $ctrl.etherPrice| number:2}} $
           </span>
         </td>
         <td>

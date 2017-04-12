@@ -54,8 +54,24 @@
 
 
   <div class="form-group" ng-if="syncModalCtrl.resolve.type == 'sell'">
-    <label>weiInitialAmount
-      <input type="number" ng-model="syncModalCtrl.weiInitialAmount" class="form-control">
+    <label>Initial Amount
+      <currency-label cathegory="initialAmount"></currency-label>
+      <div class="input-group">
+        <input type="number" 
+               ng-model="syncModalCtrl.weiInitialAmount" 
+               class="form-control"
+               placeholder="Money you want to put in contract...">
+
+        <span class="input-group-addon">
+          <span ng-show="syncModalCtrl.inEther.initialAmount">
+            {{(syncModalCtrl.weiInitialAmount || 0) * syncModalCtrl.etherPrice | number:2}} $
+          </span>
+          <span ng-hide="syncModalCtrl.inEther.initialAmount">
+            {{(syncModalCtrl.weiInitialAmount || 0) / syncModalCtrl.etherPrice | number:2}} ETH
+          </span>
+        </span>
+      </div>
+      
     </label>
   </div>
 </div>

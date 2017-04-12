@@ -15,23 +15,37 @@
 </head>
 
 <body ng-app="fsmpApp">
-<div class="container">
-  <div class="row">
-    <header class="header">
-        <nav class="nav">
-          <ul class="nav__list">
-            <li><a href="#/main" class="nav__link">Main</a></li>
-            <li><a href="#/accounts" class="nav__link">Accounts</a></li>
-            <li><a href="#/contract" class="nav__link">Contract</a></li>
-          </ul>
-        </nav>
 
-        <current-info></current-info>
-      </header>
+<nav class="navbar navbar-default" 
+    role="navigation" 
+    ng-controller="navController as navCtrl">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" ng-click="isNavCollapsed = !isNavCollapsed">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span> 
+      </button>
+      <a class="navbar-brand" href="#/main">FSMP</a>
     </div>
 
-    <div ng-view></div>
+    <div class="collapse navbar-collapse" uib-collapse="!isNavCollapsed">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#/main" ng-click="navCtrl.activateAnchor($event)">Main</a></li>
+        <li><a href="#/accounts" ng-click="navCtrl.activateAnchor($event)">Accounts</a></li>
+        <li><a href="#/contract" ng-click="navCtrl.activateAnchor($event)">Contract</a></li>
+      </ul>
+    </div>
   </div>
+</nav>  
+
+<div class="container">
+
+  <header class="header"><current-info></current-info></header>
+
+  <main ng-view></main>
+</div>
 
 <script src="lib/bignumber.min.js"></script>
 <script src="lib/web3.min.js"></script>
@@ -42,7 +56,7 @@
 
 <script src="lib/angular-animate.min.js"></script>
 
-<script src="lib/jquery.min.js"></script>
+<!--<script src="lib/jquery.min.js"></script>-->
 
 <script src="app/app.module.js"></script>
 <script src="app/app.routing.js"></script>
@@ -58,7 +72,9 @@
 
 <!-- Public Modules -->
 <script src="app/public/public.module.js"></script>
+<script src="app/public/nav.controller.js"></script>
 <script src="app/public/current-info/current-info.component.js"></script>
+<script src="app/public/currency-label.component.js"></script>
 
 <script src="app/public/main-page/main-page.component.js"></script>
 

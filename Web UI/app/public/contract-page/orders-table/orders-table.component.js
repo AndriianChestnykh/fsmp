@@ -15,14 +15,38 @@ angular.module('public')
     }
   });
 
-OrdersTableController.$inject = ['AccountsService', '$uibModal']
-function OrdersTableController(AccountsService, $uibModal) {
+OrdersTableController.$inject = [
+    'AccountsService', 
+    '$uibModal', 
+    '$scope',
+    'appConfig'
+  ];
+function OrdersTableController(
+    AccountsService, $uibModal, $scope, appConfig
+) {
   let ordersTableCtrl = this;
 
   // get currentAccount for sorting out my orders from all orders
   ordersTableCtrl.currentAccount = AccountsService.getCurrentAccount();
 
-  ordersTableCtrl.openSyncModal = (deviceId, deviceName, index, id, type) => {
+  // in which currency show properties
+  ordersTableCtrl.inEther = {
+    pricePerGB: false,
+    weiInitialAmount: false
+  };
+
+  ordersTableCtrl.etherPrice = appConfig.getEtherPrice();
+
+  $scope.$on('currency:change', (event, data) => {
+    let prop = data.cathegory;
+    ordersTableCtrl.inEther[prop] = data.ether;    
+  });
+
+  ordersTableCtrl.openSyncModal = openSyncModal;
+  ordersTableCtrl.cancelOrder = cancelOrder;
+  ordersTableCtrl.createStorageContract = createStorageContract;
+
+  function openSyncModal (deviceId, deviceName, index, id, type) {
     let modalInstance = $uibModal.open({
       component: 'syncModal',
       resolve: {
@@ -56,17 +80,18 @@ function OrdersTableController(AccountsService, $uibModal) {
     }, () => {
       // console.log('Sync-modal dismissed');
     });
-  };
+  }
 
-  ordersTableCtrl.cancelOrder = function(type, index, id) {
+
+  function cancelOrder (type, index, id) {
     ordersTableCtrl.onCancel({
       type: type,
       index: index,
       id: id
     });
-  };
+  }
 
-  ordersTableCtrl.createStorageContract = function(orderIndex, orderId, type, connectionInfo) {
+  function createStorageContract (orderIndex, orderId, type, connectionInfo) {
     let orderType;
 
     if (type == 'buy') {
@@ -84,6 +109,7 @@ function OrdersTableController(AccountsService, $uibModal) {
       connectionInfo: connectionInfo
     });
   }
+
 }
 
 }());

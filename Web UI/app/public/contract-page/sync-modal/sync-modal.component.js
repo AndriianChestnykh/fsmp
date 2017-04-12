@@ -13,12 +13,27 @@ angular.module('public')
   controllerAs: 'syncModalCtrl'
 });
 
-SyncModalController.$inject = ['SyncService', 'Web3Service'];
-function SyncModalController(SyncService, Web3Service) {
+SyncModalController.$inject = ['SyncService', 'Web3Service', '$scope', 'appConfig'];
+function SyncModalController(SyncService, Web3Service, $scope, appConfig) {
   let syncModalCtrl = this;
 
   let index, id, type;
   let web3 = Web3Service.getWeb3();
+
+  syncModalCtrl.inEther = {
+    initialAmount: false
+  };
+
+  syncModalCtrl.etherPrice = appConfig.getEtherPrice();
+
+  let cancelListener = $scope.$on('currency:change', (event, data) => {
+    let prop = data.cathegory;
+    syncModalCtrl.inEther[prop] = data.ether;    
+  });
+
+  syncModalCtrl.$onDestroy = () => {
+    cancelListener();
+  };
 
   syncModalCtrl.$onInit = () => {
     syncModalCtrl.myDeviceId = SyncService.getMyDeviceId();
@@ -27,7 +42,9 @@ function SyncModalController(SyncService, Web3Service) {
     index = syncModalCtrl.resolve.index;
     id = syncModalCtrl.resolve.id;
     type = syncModalCtrl.resolve.type;
+
     syncModalCtrl.apiKey = SyncService.getApiKey();
+
     syncModalCtrl.creationAllowed = false;
   };
 
@@ -43,14 +60,16 @@ function SyncModalController(SyncService, Web3Service) {
 
   //send parameters to create storage contract in orders-table
   syncModalCtrl.ok = () => {
+    let initialAmount = (syncModalCtrl.inEther.initialAmount) ?
+                        syncModalCtrl.weiInitialAmount :
+                        syncModalCtrl.weiInitialAmount / syncModalCtrl.etherPrice;
     let storageContractArgs = {
       partnerDeviceId: syncModalCtrl.deviceId,
       myDeviceId: syncModalCtrl.myDeviceId,
       index,
       id,
       type,
-      weiInitialAmount: web3
-          .toWei(syncModalCtrl.weiInitialAmount, 'ether')
+      weiInitialAmount: web3.toWei(initialAmount, 'ether')
     };
     syncModalCtrl.close({$value: storageContractArgs});
   };
@@ -63,7 +82,6 @@ function SyncModalController(SyncService, Web3Service) {
     SyncService.getCfg((cfg) => {
       let json = JSON.stringify(cfg.devices, null, 2);
       syncModalCtrl.configResult = json;
-      console.log(json);
     });
   };
 

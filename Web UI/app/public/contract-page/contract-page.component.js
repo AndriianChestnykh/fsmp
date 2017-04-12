@@ -48,17 +48,36 @@ function ContractPageController(
     ctrl.cancelOrder = cancelOrder;
     ctrl.manageStorageContract = manageStorageContract;
 
+    ctrl.inEther = {
+      BOPrice: false,
+      initialAmount: false,
+      SOPrice: false
+    };
+
+    $scope.$on('currency:change', (event, data) => {
+      let prop = data.cathegory;
+      ctrl.inEther[prop] = data.ether;      
+    });
+
     function createBuyOrder(cbo) {
       //prevent multiple requests
       ctrl.createBuyOrderDisabled = true;
 
+      let pricePerGB = (ctrl.inEther.BOPrice) ? 
+                        cbo.pricePerGB :
+                        cbo.pricePerGB / ctrl.etherPrice;
+
+      let initialAmount = (ctrl.inEther.initialAmount) ?
+                          cbo.weiInitialAmount :
+                          cbo.weiInitialAmount / ctrl.etherPrice;
+
       contract.createBuyOrder.sendTransaction(
         cbo.volumeGB,
-        web3.toWei(cbo.pricePerGB, 'ether'),
+        web3.toWei(pricePerGB, 'ether'),
         ctrl.myDeviceId,
 
         {from: currentAccount,
-          value: web3.toWei(cbo.weiInitialAmount, 'ether'),
+          value: web3.toWei(initialAmount, 'ether'),
           gas: 1000000},
       // callback
         (err) => {
@@ -75,9 +94,13 @@ function ContractPageController(
 
       ctrl.createSellOrderDisabled = true;
 
+      let pricePerGB = (ctrl.inEther.SOPrice) ?
+                       cso.pricePerGB :
+                       cso.pricePerGB / ctrl.etherPrice;
+
       contract.createSellOrder.sendTransaction(
             cso.volumeGB,
-            web3.toWei(cso.pricePerGB, 'ether'),
+            web3.toWei(pricePerGB, 'ether'),
             ctrl.myDeviceId,
             {from: currentAccount,
               value: 0,
@@ -332,12 +355,8 @@ function ContractPageController(
     function onInit() {
       ctrl.etherPrice = appConfig.getEtherPrice();
 
-      // FOR DEVELOPMENT
-      // SyncService.setApiKey('LhrjDydde9XMQyHGZ6qnakyMhFvUmbfX');
-      // END FOR DEVELOPMENT
-
       //get user's device ID if present to put into "create order" field
-      ctrl.myDeviceId = SyncService.getMyDeviceId();
+      ctrl.myDeviceId = SyncService.getMyDeviceId();      
 
       if (!ctrl.myDeviceId || !SyncService.getBaseUrl()) {
         alert('You must provide Syncthing API Key and Syncthing API address');

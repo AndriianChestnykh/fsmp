@@ -7,10 +7,9 @@
       controller: AccountsPageController
     });
 
-  AccountsPageController.$inject = ['appConfig', 'Web3Service', 'AccountsService'];
-  function AccountsPageController(appConfig, Web3Service, AccountsService) {
+  AccountsPageController.$inject = ['appConfig', 'Web3Service', 'AccountsService', '$scope'];
+  function AccountsPageController(appConfig, Web3Service, AccountsService, $scope) {
     let web3 = Web3Service.getWeb3();
-
     let ctrl = this;
 
     ctrl.$onInit = onInit;
@@ -19,6 +18,15 @@
     ctrl.setAsCurrent = setAsCurrent;
     ctrl.createAccount = createAccount;
     ctrl.unlockAccount = unlockAccount;
+
+    ctrl.etherPrice = appConfig.getEtherPrice();
+
+    ctrl.inEther = false;
+
+    $scope.$on('currency:change', (event, data) => {
+      ctrl.inEther = data.ether;
+    });
+
 
     function getAllBalances(accounts) {
       var totalBalance = 0, accountNumber, accountBalance;

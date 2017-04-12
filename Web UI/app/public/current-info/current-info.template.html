@@ -1,8 +1,20 @@
 <dl>
   <dt>Current Account</dt>
-  <dd>{{currentInfoCtrl.currentAccount}}</dd>
+  <dd>
+    <span>{{currentInfoCtrl.currentAccount}}</span>
+    <span class="label label-danger"
+          ng-if="!currentInfoCtrl.currentAccount">not found</span>
+  </dd>
   <dt>Current Contract Address</dt>
-  <dd>{{currentInfoCtrl.contractAddress}}</dd>
+  <dd>
+    <span>{{currentInfoCtrl.contractAddress}}</span>
+    <span class="label label-danger"
+          ng-if="!currentInfoCtrl.contractAddress">not set</span>
+  </dd>
   <dt>Ethereum node HTTP provider</dt>
-  <dd>{{currentInfoCtrl.httpProvider}}</dd>
+  <dd>
+    <span>{{currentInfoCtrl.httpProvider}}</span>
+    <span class="label label-danger"
+          ng-if="!currentInfoCtrl.httpProvider">not set</span>
+    </dd>
 </dl>

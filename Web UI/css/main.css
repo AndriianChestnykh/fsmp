@@ -1,3 +1,40 @@
+current-info dl {
+  font-family: monospace;
+  font-size: .9em;
+  font-weight: bold;
+  text-align: center;
+  color: hsl(122, 39%, 49%);
+}
+
+current-info dd span:nth-child(1){
+  text-decoration: underline;
+}
+
+current-info dd span {
+  text-decoration: none;
+}
+
+.navbar-default .navbar-nav>li>a,
+.navbar-default .navbar-header>a {
+  color: hsl(122, 39%, 49%);
+  transition: .4s;
+}
+
+.navbar-default .navbar-nav>li>a:hover:not(:focus) {
+  background-color: hsl(122, 39%, 79%);
+}
+
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-default .navbar-nav>li>a:focus,
+.navbar-default .navbar-nav>li.active>a,
+.navbar-default .navbar-nav>li.active>a:hover,
+.navbar-default .navbar-nav>li.active>a:focus,
+.navbar-default .navbar-header>a:hover {
+  background-color: hsl(122, 39%, 49%);
+  color: #f8f8f8;
+  outline: none;
+}
+
 td, th {
   text-align: center;
 }
@@ -9,22 +46,9 @@ td.ellipsis {
   white-space: nowrap;
 }
 
-.currency {
+.currency,
+span[uib-popover] {
   cursor: pointer;
-}
-
-.nav__list {
-  list-style: none;
-  padding: 0;
-  padding-top: 10px;
-  margin: 0 auto;
-  display: block;
-  width: 500px;
-}
-
-.nav__list li {
-  display: inline-block;
-  padding-right: 30px;
 }
 
 .center-account {
@@ -36,14 +60,7 @@ td.ellipsis {
   margin-bottom: 30px;
 }
 
-current-info dl {
-  font-family: monospace;
-  font-size: .9em;
-  font-weight: bold;
-  text-align: center;
-  color: #4caf50;
-}
-
-current-info dd {
-  text-decoration: underline;
-}
+.popover-inner {
+  word-wrap: break-word;
+  /*overflow: scroll;*/
+} 

@@ -1,8 +1,8 @@
 <div class="row indent">
     <div class="col-lg-6">
-        <h1>Buy Orders</h1>
+        <h1 class="text-center">Buy Orders</h1>
 
-        <h3>Create Buy Order</h3>
+        <h3 class="text-center">Create Buy Order</h3>
         <form class="row" name="cbo-form">
 
           <div class="form-group">
@@ -19,13 +19,19 @@
 
           <div class="form-group">
             <label>Price Per GB:
+              <currency-label cathegory="BOPrice"></currency-label>
               <div class="input-group">
                 <input type="number"
                       ng-model="cbo.pricePerGB"
                       class="form-control"
                       placeholder="Price you want to pay..."/>
                 <span class="input-group-addon">
-                  {{(cbo.pricePerGB || 0) * $ctrl.etherPrice | number:2}}$
+                  <span ng-show="$ctrl.inEther.BOPrice">
+                    {{(cbo.pricePerGB || 0) * $ctrl.etherPrice | number:2}} $
+                  </span>
+                  <span ng-hide="$ctrl.inEther.BOPrice">
+                    {{(cbo.pricePerGB || 0) / $ctrl.etherPrice | number:2}} ETH
+                  </span>
                 </span>
               </div>
             </label>
@@ -47,19 +53,25 @@
 
           <div class="form-group">
             <label>Initial Amount:
+              <currency-label cathegory="initialAmount"></currency-label>
               <div class="input-group">
                 <input type="number"
                       ng-model="cbo.weiInitialAmount"
                       class="form-control"
                       placeholder="Amount of ether you put into contract..."/>
                 <span class="input-group-addon">
-                  {{(cbo.weiInitialAmount || 0) * $ctrl.etherPrice | number:2}}$
+                  <span ng-show="$ctrl.inEther.initialAmount">
+                    {{(cbo.weiInitialAmount || 0) * $ctrl.etherPrice | number:2}} $
+                  </span>
+                  <span ng-hide="$ctrl.inEther.initialAmount">
+                    {{(cbo.weiInitialAmount || 0) / $ctrl.etherPrice | number:2}} ETH
+                  </span>
                 </span>
               </div>
             </label>
           </div>
 
-          <div class="form-group">
+          <div class="form-group text-center">
             <button ng-click="$ctrl.createBuyOrder(cbo)"
                     ng-disabled="$ctrl.createBuyOrderDisabled"
                     class="btn btn-success">Create Buy Order</button>
@@ -70,8 +82,8 @@
 
 
     <div class="col-lg-6">
-        <h1>Sell Orders</h1>
-        <h3>Create Sell Order</h3>
+        <h1 class="text-center">Sell Orders</h1>
+        <h3 class="text-center">Create Sell Order</h3>
 
         <form>
 
@@ -81,7 +93,7 @@
                 <input type="number"
                       ng-model="cso.volumeGB"
                       class="form-control"
-                      placeholder="Volume GB"/>
+                      placeholder="Volume you want to sell..."/>
                 <span class="input-group-addon">
                   GB
                 </span>
@@ -91,13 +103,19 @@
 
           <div class="form-group">
             <label>Price Per GB:
+              <currency-label cathegory="SOPrice"></currency-label>
               <div class="input-group">
                 <input type="number"
                       ng-model="cso.pricePerGB"
                       class="form-control"
-                      placeholder="Price Per GB"/>
+                      placeholder="Price you want to get..."/>
                 <span class="input-group-addon">
-                  {{(cso.pricePerGB || 0) * $ctrl.etherPrice | number:2}}$
+                  <span ng-show="$ctrl.inEther.SOPrice">
+                    {{(cso.pricePerGB || 0) * $ctrl.etherPrice | number:2}} $
+                  </span>
+                  <span ng-hide="$ctrl.inEther.SOPrice">
+                    {{(cso.pricePerGB || 0) / $ctrl.etherPrice | number:2}} ETH
+                  </span>
                 </span>
               </div>
             </label>
@@ -117,10 +135,10 @@
             </label>
           </div>
 
-          <div class="form-group">
+          <div class="form-group text-center">
             <button ng-click="$ctrl.createSellOrder(cso);"
                     ng-disabled="$ctrl.createSellOrderDisabled"
-                    class="btn btn-success pull-right">Create Sell Order</button>
+                    class="btn btn-success">Create Sell Order</button>
           </div>
         </form>
     </div>
@@ -129,36 +147,38 @@
 
 <div class="row indent">
   <div class="col-lg-6">
-    <h3>All Buy Orders</h3>
+    <h3 class="text-center">All Buy Orders</h3>
     <orders-table
       table-data="$ctrl.buyOrders"
       type="buy"
       owner="public"
       on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, connectionInfo, weiInitialAmount)">
     </orders-table>
-    <label>
+    <div class="text-center">
       <button type="button" ng-click="$ctrl.getBuyOrders()" class="btn btn-success">Get Buy Orders</button>
-    </label>
+    </div>
   </div>
 
   <div class="col-lg-6">
-    <h3>All Sell Orders</h3>
+    <h3 class="text-center">All Sell Orders</h3>
     <orders-table
       table-data="$ctrl.sellOrders"
       type="sell"
       owner="public"
       on-create="$ctrl.createStorageContract(orderIndex, orderId, orderType, connectionInfo, weiInitialAmount)">
     </orders-table>
-    <label>
-      <button type="button" ng-click="$ctrl.getSellOrders()" class="btn btn-success">Get Sell Orders</button>
-    </label>
+    <div class="text-center">
+      <button type="button" 
+              ng-click="$ctrl.getSellOrders()" 
+              class="btn btn-success">Get Sell Orders</button>
+    </div>
   </div>
 </div>
 
 
 <div class="row indent">
   <div class="col-lg-6">
-    <h3>My Buy Orders</h3>
+    <h3 class="text-center">My Buy Orders</h3>
     <orders-table
       table-data="$ctrl.buyOrders"
       type="buy"
@@ -167,7 +187,7 @@
     </orders-table>
   </div>
   <div class="col-lg-6">
-    <h3>My Sell Orders</h3>
+    <h3 class="text-center">My Sell Orders</h3>
     <orders-table
       table-data="$ctrl.sellOrders"
       type="sell"
@@ -178,9 +198,9 @@
 </div>
 
 
-<h1>Storage Contracts</h1>
+<h1 class="text-center">Storage Contracts</h1>
 
-<h3>All Storage Contracts</h3>
+<h3 class="text-center">All Storage Contracts</h3>
 <div class="row indent">
   <storage-contracts
     sc-data="$ctrl.storageContracts"
@@ -190,13 +210,15 @@
   </storage-contracts>
 </div>
 <div class="row indent">
-  <label>
-    <button type="button" ng-click="$ctrl.getStorageContracts()" class="btn btn-success">Get Storage Contracts</button>
-  </label>
+  <div class="text-center">
+    <button type="button" 
+            ng-click="$ctrl.getStorageContracts()" 
+            class="btn btn-success">Get Storage Contracts</button>
+  </div>
 </div>
 
 <div class="row indent">
-  <h3>My Storage Contracts</h3>
+  <h3 class="text-center">My Storage Contracts</h3>
   <storage-contracts
     sc-data="$ctrl.storageContracts"
     owner="me"

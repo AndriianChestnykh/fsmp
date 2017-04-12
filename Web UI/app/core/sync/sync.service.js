@@ -4,24 +4,25 @@
 angular.module('core')
 .service('SyncService', SyncService);
 
-SyncService.$inject = ['$http'];
-function SyncService($http) {
+SyncService.$inject = ['$http', '$window'];
+function SyncService($http, $window) {
   let service = this;
-  // development
-  let baseUrl = '';
-  // let baseUrl = 'http://localhost:8384';
 
-  // development
-  let apiKey = '';
+  // try to retrieve from previous sessions
+  let baseUrl = $window.localStorage.syncAddress || null;
+  let apiKey = $window.localStorage.syncApiKey || null;
+  let myDeviceId = $window.localStorage.syncDeviceId || null;
+  
+  // let baseUrl = 'http://localhost:8384';
   // let apiKey = 'LhrjDydde9XMQyHGZ6qnakyMhFvUmbfX';
-  let myDeviceId = '';
+  
 
   // fetch API key from the server
   // fetchApiKey('http://127.0.0.1:8080/syncthingoptions');
 
   service.setBaseUrl = (url) => {
     baseUrl = url;
-    console.log('Syncthing API Address ->', baseUrl);
+    $window.localStorage.setItem('syncAddress', url);
   };
   service.getBaseUrl = () => baseUrl;
 
@@ -31,7 +32,9 @@ function SyncService($http) {
     // refresh user's device ID
     service.getCfg((cfg) => {
       myDeviceId = cfg.devices[0].deviceID;
+      $window.localStorage.setItem('syncDeviceId', myDeviceId);
     });
+    $window.localStorage.setItem('syncApiKey', newApiKey);
   };
 
   service.getMyDeviceId = () => myDeviceId;

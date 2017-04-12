@@ -14,24 +14,37 @@ angular.module('public')
   }
 });
 
-StorageContractsController.$inject = ['AccountsService'];
-function StorageContractsController(AccountsService) {
+StorageContractsController.$inject = ['AccountsService', '$scope'];
+function StorageContractsController(AccountsService, $scope) {
   let SCCtrl = this;
 
   SCCtrl.currentAccount = AccountsService.getCurrentAccount();
 
-  SCCtrl.manageStorageContract = (storageContractIndex,
+  SCCtrl.inEther = {
+    pricePerGB: false,
+    weiLeftToWithdraw: false,
+    weiAllowedToWithdraw: false
+  };
+
+  $scope.$on('currency:change', (event, data) => {
+    let prop = data.cathegory;
+    SCCtrl.inEther[prop] = data.ether;    
+  });
+
+
+  SCCtrl.manageStorageContract = manageStorageContract;
+
+  function manageStorageContract (storageContractIndex,
                                   storageContractID,
                                   method,
-                                  wei) => {
+                                  wei) {
     SCCtrl.onContractManage({
       storageContractIndex: storageContractIndex,
       storageContractID: storageContractID,
       method: method,
       wei: wei
     });
-  }; // end SCCtrl.manageStorageContract
-
+  } // end manageStorageContract
 }
 
 }());
