@@ -10,6 +10,12 @@ function navController ($location) {
   let navCtrl = this;
 
   activeAnchor = document.querySelector('li>a[href="#' + path + '"]');
+  
+  //if some other path activeAnchor must be MAIN
+  if (!activeAnchor) {
+    activeAnchor = document.querySelector('li>a[href="#/main"]');
+  }
+
   activeAnchor.parentNode.className = 'active';  
 
   navCtrl.activateAnchor = activateAnchor;
