@@ -13,8 +13,8 @@ import (
 
 func runWebserver(webDir string, webPort int, wg *sync.WaitGroup) error {
 	router := mux.NewRouter().StrictSlash(true)
-	router.Handle("/", http.FileServer(http.Dir(webDir)))
 	router.HandleFunc("/syncthingoptions", getSyncthingOptions)
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir(webDir)))
 
 	log.Println("Web server listen and serve at address: " + webUIOptions.webAddr + ":" + strconv.Itoa(webPort))
 	err := http.ListenAndServe(":"+strconv.Itoa(webPort), router)

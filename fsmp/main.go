@@ -34,11 +34,12 @@ type WebUIRuntimeOptions struct {
 }
 
 var webUIOptions WebUIRuntimeOptions
+var syncthingVersionFolder string
 
 func init() {
 	gethOptions = GethRuntimeOptions{
 		//"Geth/geth-windows-amd64-1.5.9-a07539fb/geth.exe"
-		ExecPath:      "Geth\\geth.exe",
+		ExecPath:      "Geth/geth-darwin-amd64-1.5.9-a07539fb/geth",
 		Network:       "--testnet",
 		NetworkMode:   "--light",
 		RpcEnabled:    "--rpc",
@@ -55,10 +56,11 @@ func init() {
 	flag.StringVar(&gethOptions.RpcCorsDomain, "geth-rpccorsdomain", gethOptions.RpcCorsDomain, "Geth RPC API")
 
 	apikey, _ := readSyncthingApiKey()
+	syncthingVersionFolder = "syncthing-macosx-amd64-v0.14.26"
 
 	syncthingOptions = SynctingRuntimeOptions{
 		//"Syncthing/syncthing-windows-amd64-v0.14.25/syncthing.exe"
-		ExecPath:   "Syncthing/syncthing.exe",
+		ExecPath:   "Syncthing/" + syncthingVersionFolder + "/syncthing",
 		GuiAddress: "http://127.0.0.1:8384",
 		GuiApiKey:  apikey,
 	}
@@ -85,7 +87,7 @@ func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(3)
 
-	go runGeth(&gethOptions, wg)
+	//go runGeth(&gethOptions, wg)
 	go runSyncthing(syncthingOptions.ExecPath, syncthingOptions.GuiAddress, wg)
 	go runWebserver(webUIOptions.webDir, webUIOptions.webPort, wg)
 

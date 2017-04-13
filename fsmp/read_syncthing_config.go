@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"runtime"
 )
 
 type Configuration struct {
@@ -20,8 +21,30 @@ type GuiNode struct {
 }
 
 func readSyncthingApiKey() (string, error) {
-	env := os.Getenv("LocalAppData")
-	dat, err := ioutil.ReadFile(env + "/Syncthing/config.xml")
+	/*
+	   $HOME/.config/syncthing (Unix-like),
+	   $HOME/Library/Application Support/Syncthing (Mac),
+	   %AppData%/Syncthing (Windows XP)
+	   or %LocalAppData%/Syncthing (Windows 7+)
+	*/
+
+	var env string
+	log.Println("Current OS: " + runtime.GOOS)
+
+	switch runtime.GOOS {
+	case "windows":
+		env := os.Getenv("LocalAppData")
+		env += "/Syncthing/"
+	case "darwin":
+		env = os.Getenv("HOME")
+		env += "/Library/Application Support/Syncthing/"
+	default: // "linux", "freebsd", "openbsd", "netbsd"
+		env = os.Getenv("HOME")
+		env += "/.config/syncthing/"
+	}
+	log.Print("SYNCTHING environment location " + env)
+
+	dat, err := ioutil.ReadFile(env + "config.xml")
 	if err != nil {
 		log.Print("Error: Could not read Syncthing config file")
 		return "", err
