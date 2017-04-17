@@ -120,13 +120,13 @@ func getExecPathes(syncthingVersion string, gethVersion string) (string, string,
 
 	switch runtime.GOOS {
 	case "windows":
-		syncthingExecPath = "Syncthing/" + syncthingWindowsFolder + "/Syncthing.exe"
+		syncthingExecPath = "Syncthing/" + syncthingWindowsFolder + "/syncthing.exe"
 		gethExecPath = "Geth/" + gethWindowsFolder + "/geth.exe"
 	case "darwin":
-		syncthingExecPath = "Syncthing/" + syncthingMacosxFolder + "/Syncthing"
+		syncthingExecPath = "Syncthing/" + syncthingMacosxFolder + "/syncthing"
 		gethExecPath = "Geth/" + gethMacosxFolder + "/geth"
 	default: // "linux", "freebsd", "openbsd", "netbsd"
-		syncthingExecPath = "Syncthing/" + syncthingLinuxFolder + "/Syncthing"
+		syncthingExecPath = "Syncthing/" + syncthingLinuxFolder + "/syncthing"
 		gethExecPath = "Geth/" + gethLinuxFolder + "/geth"
 	}
 
