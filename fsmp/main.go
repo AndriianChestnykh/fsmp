@@ -111,9 +111,9 @@ func getExecPathes(syncthingVersion string, gethVersion string) (string, string,
 	var syncthingMacosxFolder = "syncthing-macosx-amd64-v" + syncthingVersion
 	var syncthingLinuxFolder = "syncthing-linux-amd64-v" + syncthingVersion
 
-	var gethWindowsFolder = "geth-darwin-amd64-" + gethVersion
+	var gethWindowsFolder = "geth-windows-amd64-" + gethVersion
 	var gethMacosxFolder = "geth-darwin-amd64-" + gethVersion
-	var gethLinuxFolder = "geth-darwin-amd64-" + gethVersion
+	var gethLinuxFolder = "geth-linux-amd64-" + gethVersion
 
 	var syncthingExecPath string
 	var gethExecPath string
