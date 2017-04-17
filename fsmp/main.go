@@ -1,7 +1,11 @@
 package main
 
 import (
+	"errors"
 	"flag"
+	"log"
+	"os"
+	"runtime"
 	"sync"
 )
 
@@ -39,10 +43,14 @@ var syncthingVersionFolder string
 
 func init() {
 
-	gethVersionFolder = "geth-darwin-amd64-1.5.9-a07539fb"
+	syncthingExecPath, gethExecPath, err := getExecPathes("0.14.26", "1.6.0-facc47cb")
+	if err != nil {
+		log.Fatalln("Error getting executable pathes: ", err.Error())
+		return
+	}
 
 	gethOptions = GethRuntimeOptions{
-		ExecPath:      "Geth/" + gethVersionFolder + "/geth",
+		ExecPath:      gethExecPath,
 		Network:       "--testnet",
 		RpcEnabled:    "--rpc",
 		RpcAddr:       "127.0.0.1",
@@ -58,11 +66,9 @@ func init() {
 	flag.StringVar(&gethOptions.RpcCorsDomain, "geth-rpccorsdomain", gethOptions.RpcCorsDomain, "Geth RPC API")
 
 	apikey, _ := readSyncthingApiKey()
-	syncthingVersionFolder = "syncthing-macosx-amd64-v0.14.26"
 
 	syncthingOptions = SynctingRuntimeOptions{
-		//"Syncthing/syncthing-windows-amd64-v0.14.25/syncthing.exe"
-		ExecPath:   "Syncthing/" + syncthingVersionFolder + "/syncthing",
+		ExecPath:   syncthingExecPath,
 		GuiAddress: "http://127.0.0.1:8384",
 		GuiApiKey:  apikey,
 	}
@@ -98,4 +104,37 @@ func main() {
 	}
 
 	wg.Wait()
+}
+
+func getExecPathes(syncthingVersion string, gethVersion string) (string, string, error) {
+	var syncthingWindowsFolder string = "syncthing-windows-amd64-v" + syncthingVersion
+	var syncthingMacosxFolder = "syncthing-macosx-amd64-v" + syncthingVersion
+	var syncthingLinuxFolder = "syncthing-linux-amd64-v" + syncthingVersion
+
+	var gethWindowsFolder = "geth-darwin-amd64-" + gethVersion
+	var gethMacosxFolder = "geth-darwin-amd64-" + gethVersion
+	var gethLinuxFolder = "geth-darwin-amd64-" + gethVersion
+
+	var syncthingExecPath string
+	var gethExecPath string
+
+	switch runtime.GOOS {
+	case "windows":
+		syncthingExecPath = "Syncthing/" + syncthingWindowsFolder + "/Syncthing.exe"
+		gethExecPath = "Geth/" + gethWindowsFolder + "/geth.exe"
+	case "darwin":
+		syncthingExecPath = "Syncthing/" + syncthingMacosxFolder + "/Syncthing"
+		gethExecPath = "Geth/" + gethMacosxFolder + "/geth"
+	default: // "linux", "freebsd", "openbsd", "netbsd"
+		syncthingExecPath = "Syncthing/" + syncthingLinuxFolder + "/Syncthing"
+		gethExecPath = "Geth/" + gethLinuxFolder + "/geth"
+	}
+
+	if _, err := os.Stat(syncthingExecPath); os.IsNotExist(err) {
+		return "", "", errors.New("Syncthing exec path does not exists: " + syncthingExecPath)
+	}
+	if _, err := os.Stat(gethExecPath); os.IsNotExist(err) {
+		return "", "", errors.New("Geth exec path does not exists: " + gethExecPath)
+	}
+	return syncthingExecPath, gethExecPath, nil
 }
