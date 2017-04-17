@@ -34,14 +34,16 @@ type WebUIRuntimeOptions struct {
 }
 
 var webUIOptions WebUIRuntimeOptions
+var gethVersionFolder string
 var syncthingVersionFolder string
 
 func init() {
+
+	gethVersionFolder = "geth-darwin-amd64-1.5.9-a07539fb"
+
 	gethOptions = GethRuntimeOptions{
-		//"Geth/geth-windows-amd64-1.5.9-a07539fb/geth.exe"
-		ExecPath:      "Geth/geth-darwin-amd64-1.5.9-a07539fb/geth",
+		ExecPath:      "Geth/" + gethVersionFolder + "/geth",
 		Network:       "--testnet",
-		NetworkMode:   "--light",
 		RpcEnabled:    "--rpc",
 		RpcAddr:       "127.0.0.1",
 		RpcPort:       8545,
@@ -87,7 +89,7 @@ func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(3)
 
-	//go runGeth(&gethOptions, wg)
+	go runGeth(&gethOptions, wg)
 	go runSyncthing(syncthingOptions.ExecPath, syncthingOptions.GuiAddress, wg)
 	go runWebserver(webUIOptions.webDir, webUIOptions.webPort, wg)
 
