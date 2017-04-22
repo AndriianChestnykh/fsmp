@@ -66,7 +66,9 @@
     }
 
     function unlockAccount(pwd, account) {     
-      web3.personal.unlockAccount(account, pwd, 10000);
+      web3.personal.unlockAccount(account, pwd, 10000, () => {
+        ctrl.totalBalance = getAllBalances(web3.eth.accounts);
+      });
     }
 
   }

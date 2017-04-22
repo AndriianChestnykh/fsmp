@@ -20,11 +20,10 @@ function SyncModalController(SyncService, Web3Service, $scope, appConfig) {
   let index, id, type;
   let web3 = Web3Service.getWeb3();
 
+  // display money in ether || in dollars
   syncModalCtrl.inEther = {
     initialAmount: false
   };
-
-  syncModalCtrl.etherPrice = appConfig.getEtherPrice();
 
   let cancelListener = $scope.$on('currency:change', (event, data) => {
     let prop = data.cathegory;
@@ -37,6 +36,7 @@ function SyncModalController(SyncService, Web3Service, $scope, appConfig) {
 
   syncModalCtrl.$onInit = () => {
     syncModalCtrl.myDeviceId = SyncService.getMyDeviceId();
+    syncModalCtrl.etherPrice = appConfig.getEtherPrice();
     syncModalCtrl.deviceId = syncModalCtrl.resolve.deviceId;
     syncModalCtrl.deviceName = syncModalCtrl.resolve.deviceName;
     index = syncModalCtrl.resolve.index;
@@ -58,7 +58,7 @@ function SyncModalController(SyncService, Web3Service, $scope, appConfig) {
     });
   };
 
-  //send parameters to create storage contract in orders-table
+  // send parameters to create storage contract in orders-table
   syncModalCtrl.ok = () => {
     let initialAmount = (syncModalCtrl.inEther.initialAmount) ?
                         syncModalCtrl.weiInitialAmount :
@@ -74,6 +74,7 @@ function SyncModalController(SyncService, Web3Service, $scope, appConfig) {
     syncModalCtrl.close({$value: storageContractArgs});
   };
 
+  // dismiss modal window
   syncModalCtrl.cancel = () => {
     syncModalCtrl.dismiss({$value: 'cancel'});
   };
@@ -93,7 +94,7 @@ function SyncModalController(SyncService, Web3Service, $scope, appConfig) {
     	} else if (response.data.id){
 
     		SyncService.getCfg((cfg) => {
-          let index = 0; // index of the default filder
+          let index = 0; // index of the default folder
 
     			cfg.devices.push({
     				'deviceID': syncModalCtrl.deviceId,
