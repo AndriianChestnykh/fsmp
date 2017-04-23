@@ -15,6 +15,7 @@ func runGeth(gethOptions *GethRuntimeOptions, wg *sync.WaitGroup) error {
 
 	cmd := exec.Command(gethOptions.ExecPath,
 		gethOptions.Network,
+		gethOptions.FastOption,
 		gethOptions.RpcEnabled,
 		"--rpcapi", gethOptions.RpcApi,
 		"--rpcaddr", gethOptions.RpcAddr,

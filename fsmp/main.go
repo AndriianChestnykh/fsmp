@@ -12,6 +12,7 @@ import (
 type GethRuntimeOptions struct {
 	ExecPath      string
 	Network       string
+	FastOption    string
 	NetworkMode   string
 	RpcEnabled    string
 	RpcAddr       string
@@ -52,6 +53,7 @@ func init() {
 	gethOptions = GethRuntimeOptions{
 		ExecPath:      gethExecPath,
 		Network:       "--testnet",
+		FastOption:    "--fast",
 		RpcEnabled:    "--rpc",
 		RpcAddr:       "127.0.0.1",
 		RpcPort:       8545,
