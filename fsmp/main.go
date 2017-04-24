@@ -7,6 +7,7 @@ import (
 	"os"
 	"runtime"
 	"sync"
+	"time"
 )
 
 type GethRuntimeOptions struct {
@@ -100,6 +101,8 @@ func main() {
 	go runGeth(&gethOptions, wg)
 	go runSyncthing(syncthingOptions.ExecPath, syncthingOptions.GuiAddress, wg)
 	go runWebserver(webUIOptions.webDir, webUIOptions.webPort, wg)
+
+	time.Sleep(5 * time.Second)
 
 	if webUIOptions.webBrowser {
 		openBrowser(webUIOptions.webAddr, webUIOptions.webPort)
