@@ -90,10 +90,55 @@ function SyncService($http, $window) {
     })
   };
 
+
+  service.addDevice = () => {
+    SyncService.checkDeviceId(syncModalCtrl.deviceId, (response) => {
+
+    	if(response.data.error){
+        syncModalCtrl.message = response.data.error;
+    	} else if (response.data.id){
+
+    		SyncService.getCfg((cfg) => {
+          let index = 0; // index of the default folder
+
+    			cfg.devices.push({
+    				'deviceID': syncModalCtrl.deviceId,
+    				'name': syncModalCtrl.deviceName,
+    				'addresses':["dynamic"],
+    				"compression":"metadata",
+    				"certName":"",
+    				"introducer":false,
+    				"skipIntroductionRemovals":false,
+    				"introducedBy":"",
+    				"paused":false
+    			});
+
+          for (let n = cfg.folders.length; index < n; index++) {
+            if (cfg.folders[index].id == 'default') break;
+          }
+
+          cfg.folders[index].devices.push({
+            'deviceID': syncModalCtrl.deviceId,
+            'introducedBy': ''
+          });
+
+    			SyncService.updateCfg(cfg, (status) => {
+      				if(status == 200){
+      					syncModalCtrl.message = 'success';
+                // alow creation of SC
+                syncModalCtrl.creationAllowed = true;
+      				}
+        		})
+    		});
+    	} // end else if
+    });
+  };
+
+
   service.removeDevice = (deviceId) => {
     service.getCfg((cfg) => {
     	let len = cfg.devices.length;
-      let index = 0; // index of the default filder
+      let index = 0; // index of the default folder
 
     	cfg.devices = cfg.devices.filter(d => {
     		return d.deviceID != deviceId;

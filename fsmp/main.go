@@ -7,11 +7,13 @@ import (
 	"os"
 	"runtime"
 	"sync"
+	"time"
 )
 
 type GethRuntimeOptions struct {
 	ExecPath      string
 	Network       string
+	FastOption    string
 	NetworkMode   string
 	RpcEnabled    string
 	RpcAddr       string
@@ -52,6 +54,7 @@ func init() {
 	gethOptions = GethRuntimeOptions{
 		ExecPath:      gethExecPath,
 		Network:       "--testnet",
+		FastOption:    "--fast",
 		RpcEnabled:    "--rpc",
 		RpcAddr:       "127.0.0.1",
 		RpcPort:       8545,
@@ -98,6 +101,8 @@ func main() {
 	go runGeth(&gethOptions, wg)
 	go runSyncthing(syncthingOptions.ExecPath, syncthingOptions.GuiAddress, wg)
 	go runWebserver(webUIOptions.webDir, webUIOptions.webPort, wg)
+
+	time.Sleep(5 * time.Second)
 
 	if webUIOptions.webBrowser {
 		openBrowser(webUIOptions.webAddr, webUIOptions.webPort)

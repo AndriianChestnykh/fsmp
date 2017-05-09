@@ -34,7 +34,7 @@ func readSyncthingApiKey() (string, error) {
 	switch runtime.GOOS {
 	case "windows":
 		env := os.Getenv("LocalAppData")
-		env += "/Syncthing/"
+		env += "\\Syncthing\\"
 	case "darwin":
 		env = os.Getenv("HOME")
 		env += "/Library/Application Support/Syncthing/"
@@ -42,11 +42,12 @@ func readSyncthingApiKey() (string, error) {
 		env = os.Getenv("HOME")
 		env += "/.config/syncthing/"
 	}
-	log.Print("SYNCTHING environment location " + env)
+	log.Print("SYNCTHING environment location: " + env)
 
-	dat, err := ioutil.ReadFile(env + "config.xml")
+	configFilePath := env + "config.xml"
+	dat, err := ioutil.ReadFile(configFilePath)
 	if err != nil {
-		log.Print("Error: Could not read Syncthing config file")
+		log.Print("Error: Could not read Syncthing config file from the path: " + configFilePath)
 		return "", err
 	}
 
