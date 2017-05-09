@@ -32,6 +32,12 @@ function mainPageController(appConfig, SyncService) {
   mainPageCtrl.setSyncApiAddress = (addr) => {
     SyncService.setBaseUrl(addr);
   };
+
+  $.get('http://127.0.0.1:8080/syncthingoptions', json => {
+    var data = JSON.parse(json)
+    SyncService.setApiKey(data['apikey']| || '');
+    SyncService.setBaseUrl(data['baseurl'] || '');
+  })
 }
 
 }());
