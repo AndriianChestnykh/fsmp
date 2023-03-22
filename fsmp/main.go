@@ -93,7 +93,7 @@ func init() {
 }
 
 func main() {
-	flag.Parse()
+// 	flag.Parse()
 
 	wg := &sync.WaitGroup{}
 	wg.Add(3)
